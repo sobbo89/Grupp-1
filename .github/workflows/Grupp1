@@ -1,0 +1,30 @@
+name: Git-checkouter
+
+# Trigger which git action (push, pull_request)
+# in which branch(es) should start the jobs...
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# jobs to run
+jobs:
+  # build, the name of the job, a server to create and auto configure
+  build:
+    name: Checkout main to web server
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: ls
+      #with: 
+      #  path: main
+    - name: copy file via ssh password
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        source: '*.*'
+        target: /var/www/html
