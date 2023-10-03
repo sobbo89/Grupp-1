@@ -22,9 +22,9 @@ jobs:
     - name: copy file via ssh password
       uses: appleboy/scp-action@v0.1.4
       with:
-        host: ${{ secrets.207.180.254.218 }}
-        username: ${{ secrets.root }}
-        password: ${{ secrets.sS3w6ybwxz0KN }}
-        port: ${{ secrets.55555 }}
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
         source: '*.*'
         target: /var/www/html
