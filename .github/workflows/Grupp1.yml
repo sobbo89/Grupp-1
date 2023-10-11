@@ -4,9 +4,9 @@ name: Git-checkouter
 # in which branch(es) should start the jobs...
 on:
   push:
-    branches: [main]
+    branches: [dev]
   pull_request:
-    branches: [main]
+    branches: [dev]
 
 # jobs to run
 jobs:
@@ -27,4 +27,4 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         source: '*.*'
-        target: /var/www/html
+        target: /var/www/dev-healthevolution.nodehill.com/public_html
