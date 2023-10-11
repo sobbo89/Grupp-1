@@ -12,7 +12,7 @@ on:
 jobs:
   # build, the name of the job, a server to create and auto configure
   build:
-    name: Checkout main to web server
+    name: Checkout dev to web server
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
