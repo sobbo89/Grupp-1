@@ -28,5 +28,3 @@ jobs:
         port: ${{ secrets.PORT }}
         source: '*'
         target: /var/www/dev-healthevolution.nodehill.com/public_html
-        rm: true
-        overwrite: true
