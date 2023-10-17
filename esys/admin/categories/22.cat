@@ -1,0 +1,267 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, cstabell c WHERE g.ID = c.GruppID ORDER BY gruppnamn"; else $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, cstabell c, coachXgruppTabell cxg WHERE g.ID = c.GruppID AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+show('grupper', 'esys', 1, $grupper_query, $GruppID, 2);
+// Show individer
+if($GruppID){
+$respondent_query = "SELECT DISTINCT r.* FROM respondent r, cstabell c WHERE r.ID = c.AnvID AND r.GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show tillfallen inline
+//if($AnvID){
+//$inline_22_query = "SELECT * FROM cstabell WHERE AnvID = $AnvID AND GruppID = $GruppID";
+//show('inline_22', 'esys', 7, $inline_22_query, null, 1, null, $cat_id);
+//}
+// Show tillfalle
+//if($CSID){
+//$anvandare_15_query = "SELECT * FROM cstabell WHERE AnvID = $AnvID AND GruppID = $GruppID AND ID = $CSID";
+//show('anvandare_15', 'esys', 7, $anvandare_15_query);
+//}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+// Antal test totalt i cs
+stats('st_test1', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 1");
+stats('st_test2', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 2");
+stats('st_test3', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 3");
+// Antal test i gruppen i cs
+if($GruppID){
+stats('st_grp_test1', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 1");
+stats('st_grp_test2', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 2");
+stats('st_grp_test3', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 3");
+}
+
+$statistik_22 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal test 1 totalt: </td><td class="statsnum">'.$st_test1.'</td></tr>
+<tr><td>antal test 2 totalt: </td><td class="statsnum">'.$st_test2.'</td></tr>
+<tr><td>antal test 3 totalt: </td><td class="statsnum">'.$st_test3.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td><td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal test 1 i vald grupp: </td><td class="statsnum">'.$st_grp_test1.'</td></tr>
+<tr><td>antal test 2 i vald grupp: </td><td class="statsnum">'.$st_grp_test2.'</td></tr>
+<tr><td>antal test 3 i vald grupp: </td><td class="statsnum">'.$st_grp_test3.'</td></tr>
+</table>';
+//////////////////////////////////////
+
+$nav = true;
+$altrows = null;
+
+if($AnvID > 0){
+$results = mysql_query("SELECT * FROM cstabell WHERE AnvID=$AnvID AND tillfalle=1");
+$count31 = mysql_num_rows($results);
+} elseif(!($AnvID > 0) and $GruppID > 0){
+$results = mysql_query("SELECT * FROM cstabell WHERE gruppID=$GruppID AND tillfalle=1");
+$count31 = mysql_num_rows($results);
+}
+if($count31 > 0){
+reset($results);
+while ($rows=mysql_fetch_array($results)) { 
+	extract($rows);
+	    $gath1_f1 = $gath1_f1 + $f1;
+        $gath1_f2 = $gath1_f2 + $f2;
+        $gath1_f3 = $gath1_f3 + $f3;
+        $gath1_f4 = $gath1_f4 + $f4;
+        $gath1_f5 = $gath1_f5 + $f5;
+        $gath1_f6 = $gath1_f6 + $f6;
+        $gath1_f7 = $gath1_f7 + $f7;
+        $gath1_f8 = $gath1_f8 + $f8;
+        $gath1_f9 = $gath1_f9 + $f9;
+        $gath1_f10 = $gath1_f10 + $f10;
+		$gath1_core = $gath1_core + (($f1+$f2+$f3+$f4+$f5+$f6+$f7+$f8+$f9+$f10)/10);
+	}
+}
+
+if($AnvID > 0){
+$results = mysql_query("SELECT * FROM cstabell WHERE AnvID=$AnvID AND tillfalle=2");
+$count32 = mysql_num_rows($results);
+} elseif(!($AnvID > 0) and $GruppID > 0){
+$results = mysql_query("SELECT * FROM cstabell WHERE gruppID=$GruppID AND tillfalle=2");
+$count32 = mysql_num_rows($results);
+}
+if($count32 > 0){
+reset($results);
+while ($rows=mysql_fetch_array($results)) { 
+	extract($rows);
+	    $gath2_f1 = $gath2_f1 + $f1;
+        $gath2_f2 = $gath2_f2 + $f2;
+        $gath2_f3 = $gath2_f3 + $f3;
+        $gath2_f4 = $gath2_f4 + $f4;
+        $gath2_f5 = $gath2_f5 + $f5;
+        $gath2_f6 = $gath2_f6 + $f6;
+        $gath2_f7 = $gath2_f7 + $f7;
+        $gath2_f8 = $gath2_f8 + $f8;
+        $gath2_f9 = $gath2_f9 + $f9;
+        $gath2_f10 = $gath2_f10 + $f10;
+		$gath2_core = $gath2_core + (($f1+$f2+$f3+$f4+$f5+$f6+$f7+$f8+$f9+$f10)/10);
+	}
+}
+
+if($AnvID > 0){
+$results = mysql_query("SELECT * FROM cstabell WHERE AnvID=$AnvID AND tillfalle=3");
+$count33 = mysql_num_rows($results);
+} elseif(!($AnvID > 0) and $GruppID > 0){
+$results = mysql_query("SELECT * FROM cstabell WHERE gruppID=$GruppID AND tillfalle=3");
+$count33 = mysql_num_rows($results);
+}
+if($count33 > 0){
+reset($results);
+while ($rows=mysql_fetch_array($results)) { 
+	extract($rows);
+	    $gath3_f1 = $gath3_f1 + $f1;
+        $gath3_f2 = $gath3_f2 + $f2;
+        $gath3_f3 = $gath3_f3 + $f3;
+        $gath3_f4 = $gath3_f4 + $f4;
+        $gath3_f5 = $gath3_f5 + $f5;
+        $gath3_f6 = $gath3_f6 + $f6;
+        $gath3_f7 = $gath3_f7 + $f7;
+        $gath3_f8 = $gath3_f8 + $f8;
+        $gath3_f9 = $gath3_f9 + $f9;
+        $gath3_f10 = $gath3_f10 + $f10;
+		$gath3_core = $gath3_core + (($f1+$f2+$f3+$f4+$f5+$f6+$f7+$f8+$f9+$f10)/10);
+	}
+}
+
+
+if($GruppID > 0 OR $AnvID > 0){
+$bg = '#aabbcc';
+$inline_22 = '
+<br/><br/>
+<table id="table22">
+<tr style="background-color: '.$bg.';"><th colspan="3">Core Index</th><th class="right"></th></tr>
+<tr id=\'tc\' style=\'display:show\'>
+<td>Tillf&auml;lle ett: '.round($gath1_core/$count31,2).'</td><td>tv&aring;: '. round($gath2_core/$count32,2).'</td><td>tre: '. round($gath3_core/$count33,2).'</td>
+<td><a href="javascript:ShowOrHide(\'tc\',\'dc\');changeLink(\'&dcore=true\');" ><img src="plot/images/diagram.gif"></a></td>
+</tr>
+<tr id=\'dc\' style=\'display:none\'><td colspan="4">
+<a href="javascript:ShowOrHide(\'tc\',\'dc\')" ><img class="plotimages" src="plot/drawplot.php?dp_imagefile='.$base.'admin/plot/images/plotbgcore2.png&dp_res=8&dp_setTitle=&dp_setDescX=Testtillfälle&dp_setDescY=Värde&dp_C1=11&dp_red=0&dp_blue=0&dp_green=0&dp_C1v1='. 
+round($gath1_core/$count31,2).'&dp_C1v2='. round($gath2_core/$count32,2).'&dp_C1v3='. round($gath3_core/$count33,2).'"></a>
+</td></tr>
+
+<tr style="background-color: '.$bg.';"><th colspan="3">Hur m&aring;r du fysiskt?</th><th> &nbsp; </th></tr>
+<tr id=\'t1\' style=\'display:show\'>
+<td>Tillf&auml;lle ett: '.round($gath1_f1/$count31,2).'</td><td>tv&aring;: '. round($gath2_f1/$count32,2).'</td><td>tre: '. round($gath3_f1/$count33,2).'</td>
+<td><a href="javascript:ShowOrHide(\'t1\',\'d1\');changeLink(\'&d1=true\');" ><img src="plot/images/diagram.gif"></a></td>
+</tr>
+<tr id=\'d1\' style=\'display:none\'><td colspan="4">
+<a href="javascript:ShowOrHide(\'t1\',\'d1\')" ><img class="plotimages" src="plot/drawplot.php?dp_imagefile='.$base.'admin/plot/images/plotbg1.png&dp_res=8&dp_setTitle=&dp_setDescX=Testtillfälle&dp_setDescY=Värde&dp_C1=1&dp_red=0&dp_blue=0&dp_green=0&dp_C1v1='. 
+round($gath1_f1/$count31,2).'&dp_C1v2='. round($gath2_f1/$count32,2).'&dp_C1v3='. round($gath3_f1/$count33,2).'"></a>
+</td></tr>
+
+<tr style="background-color: '.$bg.';"><th colspan="3">Hur m&aring;r du socialt?</th><th> &nbsp; </th></tr>
+<tr id=\'t2\' style=\'display:show\'>
+<td>Tillf&auml;lle ett: '. round($gath1_f2/$count31,2).'</td><td>tv&aring;: '. round($gath2_f2/$count32,2).'</td><td>tre: '. round($gath3_f2/$count33,2).'</td>
+<td><a href="javascript:ShowOrHide(\'t2\',\'d2\');changeLink(\'&d2=true\');" ><img src="plot/images/diagram.gif"></a></td>
+</tr>
+<tr id=\'d2\' style=\'display:none\'><td colspan="4">
+<a href="javascript:ShowOrHide(\'t2\',\'d2\')" ><img class="plotimages" src="plot/drawplot.php?dp_imagefile='.$base.'admin/plot/images/plotbg2.png&dp_res=8&dp_setTitle=&dp_setDescX=Testtillfälle&dp_setDescY=Värde&dp_C1=2&dp_red=0&dp_blue=0&dp_green=0&dp_C1v1='. 
+round($gath1_f2/$count31,2).'&dp_C1v2='. round($gath2_f2/$count32,2).'&dp_C1v3='. round($gath3_f2/$count33,2).'"></a>
+</td></tr>
+
+<tr style="background-color: '.$bg.';"><th colspan="3">Hur ofta &auml;r du stressad? &nbsp; <em style="font-weight:normal;">(h&ouml;gre v&auml;rde = mindre stress)</em></th><th> &nbsp; </th></tr>
+<tr id=\'t3\' style=\'display:show\'>
+<td>Tillf&auml;lle ett: '. round($gath1_f3/$count31,2).'</td><td>tv&aring;: '. round($gath2_f3/$count32,2).'</td><td>tre: '. round($gath3_f3/$count33,2).'</td>
+<td><a href="javascript:ShowOrHide(\'t3\',\'d3\');changeLink(\'&d3=true\');" ><img src="plot/images/diagram.gif"></a></td>
+</tr>
+<tr id=\'d3\' style=\'display:none\'><td colspan="4">
+<a href="javascript:ShowOrHide(\'t3\',\'d3\')" ><img class="plotimages" src="plot/drawplot.php?dp_imagefile='.$base.'admin/plot/images/plotbg3.png&dp_res=8&dp_setTitle=&dp_setDescX=Testtillfälle&dp_setDescY=Värde&dp_C1=3&dp_red=0&dp_blue=0&dp_green=0&dp_C1v1='. 
+round($gath1_f3/$count31,2).'&dp_C1v2='. round($gath2_f3/$count32,2).'&dp_C1v3='. round($gath3_f3/$count33,2).'"></a>
+</td></tr>
+
+<tr style="background-color: '.$bg.';"><th colspan="3">Hur ofta tr&auml;nar du?</th><th> &nbsp; </th></tr>
+<tr id=\'t4\' style=\'display:show\'>
+<td>Tillf&auml;lle ett: '. round($gath1_f4/$count31,2).'</td><td>tv&aring;: '. round($gath2_f4/$count32,2).'</td><td>tre: '. round($gath3_f4/$count33,2).'</td>
+<td><a href="javascript:ShowOrHide(\'t4\',\'d4\');changeLink(\'&d4=true\');" ><img src="plot/images/diagram.gif"></a></td>
+</tr>
+<tr id=\'d4\' style=\'display:none\'><td colspan="4">
+<a href="javascript:ShowOrHide(\'t4\',\'d4\')" ><img class="plotimages" src="plot/drawplot.php?dp_imagefile='.$base.'admin/plot/images/plotbg4.png&dp_res=8&dp_setTitle=&dp_setDescX=Testtillfälle&dp_setDescY=Värde&dp_C1=4&dp_red=0&dp_blue=0&dp_green=0&dp_C1v1='. 
+round($gath1_f4/$count31,2).'&dp_C1v2='. round($gath2_f4/$count32,2).'&dp_C1v3='. round($gath3_f4/$count33,2).'"></a>
+</td></tr>
+
+<tr style="background-color: '.$bg.';"><th colspan="3">Hur &auml;r din s&ouml;mn?</th><th> &nbsp; </th></tr>
+<tr id=\'t5\' style=\'display:show\'>
+<td>Tillf&auml;lle ett: '. round($gath1_f5/$count31,2).'</td><td>tv&aring;: '. round($gath2_f5/$count32,2).'</td><td>tre: '. round($gath3_f5/$count33,2).'</td>
+<td><a href="javascript:ShowOrHide(\'t5\',\'d5\');changeLink(\'&d5=true\');" ><img src="plot/images/diagram.gif"></a></td>
+</tr>
+<tr id=\'d5\' style=\'display:none\'><td colspan="4">
+<a href="javascript:ShowOrHide(\'t5\',\'d5\')" ><img class="plotimages" src="plot/drawplot.php?dp_imagefile='.$base.'admin/plot/images/plotbg5.png&dp_res=8&dp_setTitle=&dp_setDescX=Testtillfälle&dp_setDescY=Värde&dp_C1=5&dp_red=0&dp_blue=0&dp_green=0&dp_C1v1='. 
+round($gath1_f5/$count31,2).'&dp_C1v2='. round($gath2_f5/$count32,2).'&dp_C1v3='. round($gath3_f5/$count33,2).'"></a>
+</td></tr>
+
+<tr style="background-color: '.$bg.';"><th colspan="3">Hur &auml;r dina matvanor?</th><th> &nbsp; </th></tr>
+<tr id=\'t6\' style=\'display:show\'>
+<td>Tillf&auml;lle ett: '. round($gath1_f6/$count31,2).'</td><td>tv&aring;: '. round($gath2_f6/$count32,2).'</td><td>tre: '. round($gath3_f6/$count33,2).'</td>
+<td><a href="javascript:ShowOrHide(\'t6\',\'d6\');changeLink(\'&d6=true\');" ><img src="plot/images/diagram.gif"></a></td>
+</tr>
+<tr id=\'d6\' style=\'display:none\'><td colspan="4">
+<a href="javascript:ShowOrHide(\'t6\',\'d6\')" ><img class="plotimages" src="plot/drawplot.php?dp_imagefile='.$base.'admin/plot/images/plotbg0.png&dp_res=8&dp_setTitle=&dp_setDescX=Testtillfälle&dp_setDescY=Värde&dp_C1=6&dp_red=0&dp_blue=0&dp_green=0&dp_C1v1='. 
+round($gath1_f6/$count31,2).'&dp_C1v2='. round($gath2_f6/$count32,2).'&dp_C1v3='. round($gath3_f6/$count33,2).'"></a>
+</td></tr>
+
+<tr style="background-color: '.$bg.';"><th colspan="3">Kroppssammans&auml;ttningstest</th><th> &nbsp; </th></tr>
+<tr id=\'t7\' style=\'display:show\'>
+<td>Tillf&auml;lle ett: '. round($gath1_f7/$count31,2).'</td><td>tv&aring;: '. round($gath2_f7/$count32,2).'</td><td>tre: '. round($gath3_f7/$count33,2).'</td>
+<td><a href="javascript:ShowOrHide(\'t7\',\'d7\');changeLink(\'&d7=true\');" ><img src="plot/images/diagram.gif"></a></td>
+</tr>
+<tr id=\'d7\' style=\'display:none\'><td colspan="4">
+<a href="javascript:ShowOrHide(\'t7\',\'d7\')" ><img class="plotimages" src="plot/drawplot.php?dp_imagefile='.$base.'admin/plot/images/plotbg0.png&dp_res=8&dp_setTitle=&dp_setDescX=Testtillfälle&dp_setDescY=Värde&dp_C1=7&dp_red=0&dp_blue=0&dp_green=0&dp_C1v1='. 
+round($gath1_f7/$count31,2).'&dp_C1v2='. round($gath2_f7/$count32,2).'&dp_C1v3='. round($gath3_f7/$count33,2).'"></a>
+</td></tr>
+
+<tr style="background-color: '.$bg.';"><th colspan="3">R&ouml;rlighetstest</th><th> &nbsp; </th></tr>
+<tr id=\'t8\' style=\'display:show\'>
+<td>Tillf&auml;lle ett: '. round($gath1_f8/$count31,2).'</td><td>tv&aring;: '. round($gath2_f8/$count32,2).'</td><td>tre: '. round($gath3_f8/$count33,2).'</td>
+<td><a href="javascript:ShowOrHide(\'t8\',\'d8\');changeLink(\'&d8=true\');" ><img src="plot/images/diagram.gif"></a></td>
+</tr>
+<tr id=\'d8\' style=\'display:none\'><td colspan="4">
+<a href="javascript:ShowOrHide(\'t8\',\'d8\')" ><img class="plotimages" src="plot/drawplot.php?dp_imagefile='.$base.'admin/plot/images/plotbg0.png&dp_res=8&dp_setTitle=&dp_setDescX=Testtillfälle&dp_setDescY=Värde&dp_C1=8&dp_red=0&dp_blue=0&dp_green=0&dp_C1v1='. 
+round($gath1_f8/$count31,2).'&dp_C1v2='. round($gath2_f8/$count32,2).'&dp_C1v3='. round($gath3_f8/$count33,2).'"></a>
+</td></tr>
+
+<tr style="background-color: '.$bg.';"><th colspan="3">Konditionstest</th><th> &nbsp; </th></tr>
+<tr id=\'t9\' style=\'display:show\'>
+<td>Tillf&auml;lle ett: '. round($gath1_f9/$count31,2).'</td><td>tv&aring;: '. round($gath2_f9/$count32,2).'</td><td>tre: '. round($gath3_f9/$count33,2).'</td>
+<td><a href="javascript:ShowOrHide(\'t9\',\'d9\');changeLink(\'&d9=true\');" ><img src="plot/images/diagram.gif"></a></td>
+</tr>
+<tr id=\'d9\' style=\'display:none\'><td colspan="4">
+<a href="javascript:ShowOrHide(\'t9\',\'d9\')" ><img class="plotimages" src="plot/drawplot.php?dp_imagefile='.$base.'admin/plot/images/plotbg0.png&dp_res=8&dp_setTitle=&dp_setDescX=Testtillfälle&dp_setDescY=Värde&dp_C1=9&dp_red=0&dp_blue=0&dp_green=0&dp_C1v1='. 
+round($gath1_f9/$count31,2).'&dp_C1v2='. round($gath2_f9/$count32,2).'&dp_C1v3='. round($gath3_f9/$count33,2).'"></a>
+</td></tr>
+
+<tr style="background-color: '.$bg.';"><th colspan="3">Styrketest</th><th> &nbsp; </th></tr>
+<tr id=\'t10\' style=\'display:show\'>
+<td>Tillf&auml;lle ett: '. round($gath1_f10/$count31,2).'</td><td>tv&aring;: '. round($gath2_f10/$count32,2).'</td><td>tre: '. round($gath3_f10/$count33,2).'</td>
+<td><a href="javascript:ShowOrHide(\'t10\',\'d10\');changeLink(\'&d10=true\');" ><img src="plot/images/diagram.gif"></a></td>
+</tr>
+<tr id=\'d10\' style=\'display:none\'><td colspan="4">
+<a href="javascript:ShowOrHide(\'t10\',\'d10\')" ><img class="plotimages" src="plot/drawplot.php?dp_imagefile='.$base.'admin/plot/images/plotbg0.png&dp_res=8&dp_setTitle=&dp_setDescX=Testtillfälle&dp_setDescY=Värde&dp_C1=10&dp_red=0&dp_blue=0&dp_green=0&dp_C1v1='. 
+round($gath1_f10/$count31,2).'&dp_C1v2='. round($gath2_f10/$count32,2).'&dp_C1v3='. round($gath3_f10/$count33,2).'"></a>
+</td></tr>
+
+</table>
+';
+
+} // end if grupp id or anv id
+
+?>

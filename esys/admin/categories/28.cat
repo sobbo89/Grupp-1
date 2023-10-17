@@ -1,0 +1,197 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW 
+///////////////////
+if(!$_SESSION['anv']){
+// Show foretag
+if(!$_SESSION['chef']){
+$foretag_query = "SELECT DISTINCT f.ID as ForetagID, f.ID, f.Foretagsnamn FROM foretag f, grupptabell g, cstabell c WHERE f.ID = g.FORETAG AND g.id = c.GruppID ORDER BY f.Foretagsnamn";
+show('selectforetag', 'esys', 35, $foretag_query, $FORETAG, 36);
+}elseif($_SESSION['chef']){
+$getforetag = mysql_fetch_array(mysql_query("SELECT ForetagID FROM chefXforetagTabell WHERE ChefID = ".$_SESSION['chef']));
+$FORETAG = $getforetag[0];
+}
+
+// Show grupper
+if($FORETAG){ //  or $_SESSION['chef']
+
+if($_SESSION['filtergroups']) $grupper_query_insert = " AND c.Tillfalle = $tillfallestopp";
+
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c WHERE g.ID = c.GruppID AND g.FORETAG = $FORETAG ".$grupper_query_insert." ORDER BY g.gruppnamn";
+
+elseif($_SESSION['ulvl'] == 4 AND $_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c, chefXforetagTabell cxf WHERE g.ID = c.GruppID AND g.FORETAG = cxf.ForetagID AND cxf.ChefID = ".$_SESSION['chef']." ".$grupper_query_insert." ORDER BY g.gruppnamn"; // AND g.ID != 14 AND g.ID != 35 
+
+elseif($_SESSION['coach']) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c, coachXgruppTabell cxg WHERE g.ID = c.GruppID AND g.FORETAG = $FORETAG AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ".$grupper_query_insert." ORDER BY g.gruppnamn";
+
+elseif($_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c, chefXgruppTabell cxg WHERE g.ID = c.GruppID AND g.ID = cxg.GruppID AND cxg.ChefID = ".$_SESSION['chef']." ".$grupper_query_insert." ORDER BY g.gruppnamn";
+
+else $AnvID = $_SESSION['anv'];
+
+show('grupper', 'esys', 33, $grupper_query, $GruppID, 34, null, null, 1, null, 'NULL', '', null, null, null, true);
+if(!$_SESSION['chef']) $grupper = '<option value="">Visa alla inom valt företag </option>'.$grupper;
+//}
+
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+/*
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, cstabell c WHERE g.ID = c.GruppID ORDER BY gruppnamn";
+
+elseif($_SESSION['ulvl'] == 4 AND $_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, cstabell c, chefXforetagTabell cxf WHERE g.ID = c.GruppID AND g.FORETAG = cxf.ForetagID AND cxf.ChefID = ".$_SESSION['chef']." ORDER BY gruppnamn";
+
+elseif($_SESSION['coach']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, cstabell c, coachXgruppTabell cxg WHERE g.ID = c.GruppID AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+
+elseif($_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, cstabell c, chefXgruppTabell cxg WHERE g.ID = c.GruppID AND g.ID = cxg.GruppID AND cxg.ChefID = ".$_SESSION['chef']." ORDER BY gruppnamn";
+else $AnvID = $_SESSION['anv'];
+
+
+if(!$_SESSION['anv']){
+
+if(!$_SESSION['chef']){
+$valjforetag = '';
+$foretag_query = "SELECT ID as id, FORETAGSNAMN as gruppnamn FROM foretag";
+show('valjforetag', 'esys', 1, $foretag_query, $FORETAG, 2);
+}elseif($_SESSION['chef'] AND $_SESSION['ulvl'] == 4){
+$getforetag = mysql_fetch_array(mysql_query("SELECT ForetagID FROM chefXforetagTabell WHERE ChefID = ".$_SESSION['chef']));
+$FORETAG = $getforetag[0];
+}
+
+show('grupper', 'esys', 1, $grupper_query, $GruppID, 2);
+*/
+
+if($kon == 'Alla') $koncont = '<option value="Alla" selected="selected">Alla</option>'; else $koncont = '<option value="Alla">Alla</option>';
+if($kon == 'Man') $koncont .= '<option value="Man" selected="selected">Män</option>'; else $koncont .= '<option value="Man">Män</option>';
+if($kon == 'Kvinna') $koncont .= '<option value="Kvinna" selected="selected">Kvinnor</option>'; else $koncont .= '<option value="Kvinna">Kvinnor</option>';
+
+if($_SESSION['filtergroups'] < 1) $filtreragrupper =  '&nbsp; <input type="button" value="filtrera" onclick="document.nav.subaction.value=\'filtergroups\';document.nav.submit();" style="padding-left:6px;padding-right:6px;font-weight:normal;font-style:italic;"/> &nbsp; ';
+
+if($_SESSION['filtergroups'] > 0) $filtreragrupper =  '&nbsp; <input type="button" value="filtrera inte" onclick="document.nav.subaction.value=\'dontfiltergroups\';document.nav.submit();" style="padding-left:6px;padding-right:6px;font-weight:normal;font-style:italic;"/> &nbsp; ';
+
+$alder = ' &nbsp; Från <input type="text" name="alderstart" size="2" maxlength="2" value="'.$alderstart.'"/> till <input type="text" name="alderstopp" size="2" maxlength="2" value="'.$alderstopp.'"/> år';
+$tillfallen = '<br/><br/> &nbsp; Mellan tillfälle <input type="text" name="tillfallestart" size="2" maxlength="2" value="'.$tillfallestart.'"/> och <input type="text" name="tillfallestopp" size="2" maxlength="2" value="'.$tillfallestopp.'"/>';
+if($baraklara OR !$FORETAG OR !$GruppID) $baracheck = 'checked="checked"';
+$visaklara = ' &nbsp; Visa endast de som genomfört alla valda tillfällen <input type="checkbox" name="baraklara" value="1" '.$baracheck.'/> &nbsp; ';
+$visaknapp = ' &nbsp; <input type="button" onclick="document.nav.subaction.value=\'showcharts\';document.nav.submit();" value="visa" style="padding-left:12px;padding-right:12px;font-weight:bold;"/> &nbsp; <input type="hidden" name="subaction" value=""/>';
+$utskriftval = ' &nbsp; <input type="checkbox" name="forutskrift" value="1"/> <em>för utskrift<em>';
+
+} // END IF FORETAG
+
+// Show individer (behållit för att detta används i STATS nedan)
+if($GruppID){
+$respondent_query = "SELECT DISTINCT r.* FROM respondent r, cstabell c WHERE r.ID = c.AnvID AND r.GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+
+$statistik_28 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>';
+
+// loopa bunch
+for ($i = 1; $i <= 7; $i++){
+// Antal test totalt i cs
+stats('st_test', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = $i");
+// Antal test i gruppen i cs
+if($GruppID) stats('st_grp_test', "SELECT DISTINCT c.Anvnamn FROM cstabell c, foretag f WHERE GruppID = $GruppID AND Tillfalle = $i");
+$statistik_cs_tot .= '<tr><td>antal test '.$i.' totalt: </td><td class="statsnum">'.$st_test.'</td></tr>';
+$statistik_cs_grp .= '<tr><td>antal test '.$i.' i vald grupp: </td><td class="statsnum">'.$st_grp_test.'</td></tr>';
+}
+
+$statistik_28 .= $statistik_cs_tot.'<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td>
+<td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>'.$statistik_cs_grp.'</table>';
+/*
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal kvinnor test 1 i vald grupp: </td><td class="statsnum">'.$st_grp_test1_kvinnor.'</td></tr>
+<tr><td>antal män test 1 i vald grupp: </td><td class="statsnum">'.$st_grp_test1_man.'</td></tr>
+<tr><td>antal män eller kvinnor i test 1 i vald grupp: </td><td class="statsnum">'.$st_grp_test1_alla.'</td></tr>
+<tr><td>åldersurval i test 1 i vald grupp: </td><td class="statsnum">'.$st_grp_test1_alder.'</td></tr>
+*/
+//////////////////////////////////////
+
+$nav = true;
+$norespondents = true;
+
+//$altrows = true;
+//if($_SESSION['ulvl'] > 7) $moreoptions = '<option value="99999">Visa alla</option>';
+//if($_SESSION['ulvl'] > 7 or $_SESSION['ulvl'] == 4) $moreoptions .= '<option value="99998">Visa alla färdiga</option>';
+
+//if(($GruppID or $FORETAG) and ($subaction != 'filtergroups' or $subaction != 'dontfiltergroups')){ 
+
+if(($GruppID or $FORETAG) and $subaction == 'showcharts'){ 
+
+$gstr = 'FORETAG='.$FORETAG.'&GruppID='.$GruppID.'&kon='.$kon.'&alderstart='.$alderstart.'&alderstopp='.$alderstopp.'&tillfallestart='.$tillfallestart.'&tillfallestopp='.$tillfallestopp.'&baraklara='.$baraklara;
+
+$graph1 = graphnamegate('cs_pies_namegate.php','graphs/cs_pies.php?'.$gstr);
+$graph2 = graphnamegate('cs_graph_namegate.php','graphs/cs_graph.php?Question=7&'.$gstr,7);
+$graph3 = graphnamegate('cs_graph_namegate.php','graphs/cs_graph.php?Question=8&'.$gstr,8);
+$graph4 = graphnamegate('cs_graph_namegate.php','graphs/cs_graph.php?Question=9&'.$gstr,9);
+$graph5 = graphnamegate('cs_graph_namegate.php','graphs/cs_graph.php?Question=10&'.$gstr,10);
+$graph6 = graphnamegate('cs_core_graph_namegate.php','graphs/cs_core_graph.php?'.$gstr);
+$graph7 = graphnamegate('cs_fys_graph_namegate.php','graphs/cs_fys_graph.php?'.$gstr);
+
+$inline_28 .= '<br/><br/>
+<table id="tableCSD" cellpadding="0" cellspacing="0" border="0"><tr><td colspan="4" align="left">
+<img src="'.$graph1.'"/>
+</td></tr><tr><td align="left" width="167">
+<img src="'.$graph2.'"/>
+</td><td align="center">
+<img src="'.$graph3.'"/>
+</td><td align="center">
+<img src="'.$graph4.'"/>
+</td><td align="right" width="167">
+<img src="'.$graph5.'"/>
+</td></tr><tr><td colspan="2" align="left" width="335">
+<img src="'.$graph6.'"/>
+</td><td colspan="2" align="right" width="335">
+<img src="'.$graph7.'"/>
+</td></tr></table><br/><br/>';
+}
+
+}elseif($_SESSION['anv']){
+
+$gstr = 'AnvID='.$AnvID.'&tillfallestart='.$tillfallestart.'&tillfallestopp='.$tillfallestopp;
+
+$graph1 = graphnamegate('cs_pies_namegate.php','graphs/cs_pies.php?'.$gstr);
+$graph2 = graphnamegate('cs_graph_namegate.php','graphs/cs_graph.php?Question=7&'.$gstr,7);
+$graph3 = graphnamegate('cs_graph_namegate.php','graphs/cs_graph.php?Question=8&'.$gstr,8);
+$graph4 = graphnamegate('cs_graph_namegate.php','graphs/cs_graph.php?Question=9&'.$gstr,9);
+$graph5 = graphnamegate('cs_graph_namegate.php','graphs/cs_graph.php?Question=10&'.$gstr,10);
+$graph6 = graphnamegate('cs_core_graph_namegate.php','graphs/cs_core_graph.php?'.$gstr);
+$graph7 = graphnamegate('cs_fys_graph_namegate.php','graphs/cs_fys_graph.php?'.$gstr);
+
+$inline_28 .= '<br/><br/>
+<table id="tableCSD" cellpadding="0" cellspacing="0" border="0"><tr><td colspan="4" align="left">
+<img src="'.$graph1.'"/>
+</td></tr><tr><td align="left" width="167">
+<img src="'.$graph2.'"/>
+</td><td align="center">
+<img src="'.$graph3.'"/>
+</td><td align="center">
+<img src="'.$graph4.'"/>
+</td><td align="right" width="167">
+<img src="'.$graph5.'"/>
+</td></tr><tr><td colspan="2" align="left" width="335">
+<img src="'.$graph6.'"/>
+</td><td colspan="2" align="right" width="335">
+<img src="'.$graph7.'"/>
+</td></tr></table><br/><br/>';
+}
+?>

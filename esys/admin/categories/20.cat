@@ -1,0 +1,123 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT * FROM grupptabell ORDER BY gruppnamn"; else $grupper_query = "SELECT g.* FROM grupptabell g, coachXgruppTabell cxg WHERE g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+show('grupper', 'esys', 1, $grupper_query, $GruppID, 2);
+// Show individer
+if($GruppID){
+$respondent_query = "SELECT * FROM respondent WHERE GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show coacher
+$coacher_query = "SELECT * FROM coachtabell order by coachnamn";
+show('coacher', 'esys', 10, $coacher_query);
+// Show grupper -> Being done in index
+/*$grupper_query = "SELECT * FROM grupptabell";
+show('grupper', 'esys', 11, $grupper_query);*/
+
+$inline_20_query = "SELECT cxgtt.ID, gtt.gruppnamn, ctt.coachnamn, cxgtt.coachID, cxgtt.gruppID, cxgtt.Maxantal FROM coachXgruppTabell cxgtt, grupptabell gtt, coachtabell ctt WHERE cxgtt.gruppID = gtt.ID AND cxgtt.coachID = ctt.ID ORDER BY ctt.coachnamn, gtt.gruppnamn";
+show('inline_20_add', 'esys', 12, $inline_20_query, null, 1, null, $cat_id, 1, null, 'NULL', '', null, true);
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SELECTOR (instead of nav)
+///////////////////
+$inline_20 ='
+<form name="selectcxg" id="selectcxg" method="post">
+
+<select name="coacher_CoachID" class="selector">
+<option value="">Välj Coach: &nbsp; </option>
+'.$coacher.'
+</select>
+
+<select name="grupper_GruppID" class="selector">
+<option value="">Välj Grupp: &nbsp; </option>
+'.$grupper.'
+</select>
+
+<input type="hidden" name="cat_id" value="'.$cat_id.'"/>
+<input type="hidden" name="key" value="42"/>
+<input type="hidden" name="action" value="insert"/>
+<input type="button" class="submit" onclick="document.selectcxg.submit();" value="Skapa koppling"/>
+</form>
+<br/><br/>
+<form name="listcxg" id="listcxg" method="post">
+<table id="table20">
+'.$inline_20_add.'
+</table>
+<input type="hidden" name="maxantal" value=""/>
+<input type="hidden" name="cxgid" value=""/>
+<input type="hidden" name="cat_id" value="'.$cat_id.'"/>
+<input type="hidden" name="key" value="42"/>
+<input type="hidden" name="action" value="delete"/>
+</form>';
+/* maxantal code
+<label for="maxantal"> &nbsp; Maxantal:</label>
+<input type="text" class="inputnum2" name="maxantal" value="0"/>
+*/
+//////////////////////////////////////
+
+$nav = null;
+$altrows = null;
+
+//////////////////////////////////////
+// DB INSERT QUERIES
+///////////////////
+//
+if($action == "insert" and $key and $cat_id == "20"){
+include "inc/errors.inc";
+$insert_query = "INSERT INTO coachXgruppTabell SET";
+if($_POST['coacher_CoachID']) $insert_query .= " CoachID = ".quote_smart($_POST['coacher_CoachID']); else die('CoachID saknas '.$tryagain);
+if($_POST['grupper_GruppID']) $insert_query .= ", GruppID = ".quote_smart($_POST['grupper_GruppID']); else die('GruppID saknas '.$tryagain);
+if($_POST['maxantal']) $insert_query .= ", Maxantal = ".quote_smart($_POST['maxantal']); else $insert_query .= ", Maxantal = 0";
+$insert_query = sprintf($insert_query);
+//echo $insert_query; die();
+$result = mysql_query($insert_query) or die(mysql_error());
+$success = "Ny koppling sparad";
+}elseif($action == "insert" and (!$key or !$cat_id)){
+logout(2);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// DB DELETE QUERIES
+///////////////////
+//
+if($action == "delete" and $key and ($_POST['cxgid']) and $cat_id == "20"){
+$delete_query = "DELETE FROM coachXgruppTabell WHERE ID =".quote_smart($_POST['cxgid']);
+$delete_query = sprintf($delete_query);
+//echo $delete_query; die();
+$result = mysql_query($delete_query) or die(mysql_error());
+$success = "Kopplingen borttagen";
+}elseif($action == "delete" and (!$key or !$cat_id or !($_POST['cxgid']))){
+logout(2);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// DB UPDATE QUERIES
+///////////////////
+//
+if($action == "update" and $key and $_POST['cxgid'] and $cat_id == "20"){
+$update_query = "UPDATE coachXgruppTabell SET";
+if($_POST['maxantal']) $update_query .= " Maxantal = ".quote_smart($_POST['maxantal']); else $update_query .= " Maxantal = 0";
+$update_query .= " WHERE ID = ".quote_smart($_POST['cxgid']);
+$update_query = sprintf($update_query);
+//echo $update_query; die();
+$result = mysql_query($update_query) or die(mysql_error());
+$success = "Ändringar sparade";
+}elseif($action == "update" and (!$key or !$cat_id or !$coacher_CoachID)){
+logout(2);
+}
+//////////////////////////////////////
+?>

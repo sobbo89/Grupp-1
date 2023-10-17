@@ -1,0 +1,101 @@
+﻿<?php
+
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+$grupper_query = "SELECT gtt.id, gtt.gruppnamn, cxgtt.coachID, cxgtt.gruppID FROM coachXgruppTabell cxgtt, grupptabell gtt, coachtabell ctt WHERE cxgtt.gruppID = gtt.ID AND cxgtt.coachID = ctt.ID AND cxgtt.coachID = ".$_SESSION['coach']." ORDER BY ctt.coachnamn";
+
+//if($_SESSION['ulvl'] > 7)  $grupper_query = "SELECT * FROM grupptabell ORDER BY gruppnamn"; else $grupper_query = "SELECT g.* FROM grupptabell g, coachXgruppTabell cxg WHERE g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+
+
+show('grupper', 'esys', 27, $grupper_query, $GruppID, 28, null, null, 1, null, 'NULL', '', null, true);
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show individer inline 
+if($GruppID){
+
+$prepend_36_query = "SELECT r.ID, r.GruppID, l.ID AS LvID, l.f1, l.f4, l.f5 FROM respondent r, livsstil l WHERE r.username = l.Anvnamn AND r.GruppID = $GruppID AND l.f43 = ".$_SESSION['coach']." AND l.Status IS NULL ORDER BY l.Status, r.username";
+show('prepend_36', 'esys', 29, $prepend_36_query, null, 1, null, $cat_id);
+
+$inline_36_query = "SELECT r.ID, r.GruppID, l.ID AS LvID, l.f1, l.f4, l.f5 FROM respondent r, livsstil l WHERE r.username = l.Anvnamn AND r.GruppID = $GruppID AND l.f43 = ".$_SESSION['coach']." AND l.Status IS NOT NULL ORDER BY l.Status, r.username";
+show('inline_36', 'esys', 26, $inline_36_query, null, 1, null, $cat_id);
+
+// prepend and append to result
+$inline_36 = '<br/><br/><strong>Deltagare i gruppen som valt dig som coach när de gjort sin livsstilsprofil:</strong><br/><em><ul><li>Klicka på namnet för att se dennes livsstilsprofil.</li><li>Klicka på mailadressen för att skapa ett tomt mail till deltagaren i ditt mailprogram.</li><li>Klicka på "Aktivera" för att sätta igång deltagaren.</li></ul></em><br/>
+<table id="table36">
+	<tr>
+		<th>Status</th>
+		<th>Namn</th>
+		<th>Email</th>
+		<th>Telefon</th>
+	</tr>'
+	.$prepend_36.$inline_36.
+	'</table>';
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+// Antal test totalt i livsstil
+stats('st_test1', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.username = l.Anvnamn");
+// Antal män i test totalt i livsstil
+stats('st_test1_man', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.username = l.Anvnamn AND l.f2 = 'Man'");
+// Antal kvinnor i test totalt i livsstil
+stats('st_test1_kvinnor', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.username = l.Anvnamn AND l.f2 = 'Kvinna'");
+// Antal test i gruppen i livsstil
+if($GruppID){
+stats('st_grp_test1', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.GruppID = $GruppID AND r.username = l.Anvnamn");
+// Antal män i gruppen i livsstil
+stats('st_grp_test1_man', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.GruppID = $GruppID AND r.username = l.Anvnamn AND l.f2 = 'Man'");
+// Antal kvinnor i gruppen livsstil
+stats('st_grp_test1_kvinnor', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.GruppID = $GruppID AND r.username = l.Anvnamn AND l.f2 = 'Kvinna'");
+}
+
+$statistik_36 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal livsstil totalt: </td><td class="statsnum">'.$st_test1.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal män i livsstil totalt: </td><td class="statsnum">'.$st_test1_man.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal kvinnor i livsstil totalt: </td><td class="statsnum">'.$st_test1_kvinnor.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td><td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal livsstil i vald grupp: </td><td class="statsnum">'.$st_grp_test1.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal män i livsstil i vald grupp: </td><td class="statsnum">'.$st_grp_test1_man.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal kvinnor i livsstil i vald grupp: </td><td class="statsnum">'.$st_grp_test1_kvinnor.'</td></tr>
+</table>';
+//////////////////////////////////////
+
+$nav = true;
+$altrows = true;
+$norespondents = true;
+
+//////////////////////////////////////
+// DB UPDATE QUERIES
+///////////////////
+//
+if($_GET['action'] == "activate" and $_GET['LvID'] and $cat_id == "36"){
+$update_query = "UPDATE livsstil SET Status = 1 WHERE ID = ".quote_smart($_GET['LvID']);
+$result = mysql_query($update_query) or die(mysql_error());
+$success = "Aktiverad";
+}
+//////////////////////////////////////
+?>

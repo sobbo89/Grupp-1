@@ -1,0 +1,86 @@
+﻿<?php
+
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+//if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT * FROM grupptabell ORDER BY gruppnamn"; else $grupper_query = "SELECT g.* FROM grupptabell g, coachXgruppTabell cxg WHERE g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+//show('grupper', 'esys', 1, $grupper_query, $GruppID, 2);
+
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.*, g.id AS GruppID FROM grupptabell g, respondent r, livsstil l WHERE r.username = l.Anvnamn AND r.GruppID = g.id ORDER BY g.gruppnamn"; else $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, respondent r, livsstil l, coachXgruppTabell cxg WHERE r.username = l.Anvnamn AND r.GruppID = g.id AND g.id = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY g.gruppnamn";
+show('grupper', 'esys', 33, $grupper_query, $GruppID, 34, null, null, 1, null, 'NULL', '', null, null, null, true);
+
+// Show individer
+if($GruppID){
+$respondent_query = "SELECT r.ID, l.f1 FROM respondent r, livsstil l WHERE r.username = l.Anvnamn AND r.GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show tillfallen inline
+if($AnvID){
+$inline_17_prepare = "SELECT username FROM respondent WHERE ID = $AnvID";
+$results = mysql_query($inline_17_prepare) or die(mysql_error());
+$rows=mysql_fetch_array($results);
+extract($rows);
+$inline_17_query = "SELECT * FROM livsstil WHERE Anvnamn = '".$username."'";
+// echo $inline_17_query; die();
+// special, intern ny livsstil visa endast för superadmins
+if($_SESSION['ulvl'] > 7) $temptpl = 42; else $temptpl = 14;
+show('inline_17', 'esys', $temptpl, $inline_17_query, null, 1, null, $cat_id);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+// Antal test totalt i livsstil
+stats('st_test1', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.username = l.Anvnamn");
+// Antal män i test totalt i livsstil
+stats('st_test1_man', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.username = l.Anvnamn AND l.f2 = 'Man'");
+// Antal kvinnor i test totalt i livsstil
+stats('st_test1_kvinnor', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.username = l.Anvnamn AND l.f2 = 'Kvinna'");
+// Antal test i gruppen i livsstil
+if($GruppID){
+stats('st_grp_test1', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.GruppID = $GruppID AND r.username = l.Anvnamn");
+// Antal män i gruppen i livsstil
+stats('st_grp_test1_man', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.GruppID = $GruppID AND r.username = l.Anvnamn AND l.f2 = 'Man'");
+// Antal kvinnor i gruppen livsstil
+stats('st_grp_test1_kvinnor', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.GruppID = $GruppID AND r.username = l.Anvnamn AND l.f2 = 'Kvinna'");
+}
+
+$statistik_17 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal livsstil totalt: </td><td class="statsnum">'.$st_test1.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal män i livsstil totalt: </td><td class="statsnum">'.$st_test1_man.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal kvinnor i livsstil totalt: </td><td class="statsnum">'.$st_test1_kvinnor.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td><td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal livsstil i vald grupp: </td><td class="statsnum">'.$st_grp_test1.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal män i livsstil i vald grupp: </td><td class="statsnum">'.$st_grp_test1_man.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal kvinnor i livsstil i vald grupp: </td><td class="statsnum">'.$st_grp_test1_kvinnor.'</td></tr>
+</table>';
+//////////////////////////////////////
+
+$nav = true;
+$altrows = true;
+
+?>

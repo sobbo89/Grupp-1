@@ -1,0 +1,203 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT * FROM grupptabell ORDER BY gruppnamn"; else $grupper_query = "SELECT g.* FROM grupptabell g, coachXgruppTabell cxg WHERE g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+show('grupper', 'esys', 1, $grupper_query, $GruppID, 2);
+// Show individer
+if($GruppID){
+$respondent_query = "SELECT * FROM respondent WHERE GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show tillfallen inline
+if($AnvID){
+$inline_15_query = "SELECT *,f11 AS ft11, f12 AS ft12, f13 AS ft13 FROM cstabell WHERE AnvID = $AnvID AND GruppID = $GruppID ORDER BY Tillfalle";
+show('inline_15', 'esys', 7, $inline_15_query, null, 1, null, $cat_id, 1, null, 'NULL', '', 1);
+}
+// Show tillfalle
+//if($CSID){
+//$anvandare_15_query = "SELECT * FROM cstabell WHERE AnvID = $AnvID AND GruppID = $GruppID AND ID = $CSID";
+//show('anvandare_15', 'esys', 7, $anvandare_15_query);
+//}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+// Antal test totalt i cs
+stats('st_test1', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 1");
+stats('st_test2', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 2");
+stats('st_test3', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 3");
+stats('st_test4', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 4");
+stats('st_test5', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 5");
+stats('st_test6', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 6");
+stats('st_test7', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 7");
+// Antal test i gruppen i cs
+if($GruppID){
+stats('st_grp_test1', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 1");
+stats('st_grp_test2', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 2");
+stats('st_grp_test3', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 3");
+stats('st_grp_test4', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 4");
+stats('st_grp_test5', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 5");
+stats('st_grp_test6', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 6");
+stats('st_grp_test7', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 7");
+}
+
+$statistik_15 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'notes\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'notes\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal test 1 totalt: </td><td class="statsnum">'.$st_test1.'</td></tr>
+<tr><td>antal test 2 totalt: </td><td class="statsnum">'.$st_test2.'</td></tr>
+<tr><td>antal test 3 totalt: </td><td class="statsnum">'.$st_test3.'</td></tr>
+<tr><td>antal test 4 totalt: </td><td class="statsnum">'.$st_test4.'</td></tr>
+<tr><td>antal test 5 totalt: </td><td class="statsnum">'.$st_test5.'</td></tr>
+<tr><td>antal test 6 totalt: </td><td class="statsnum">'.$st_test6.'</td></tr>
+<tr><td>antal test 7 totalt: </td><td class="statsnum">'.$st_test7.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td><td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal test 1 i vald grupp: </td><td class="statsnum">'.$st_grp_test1.'</td></tr>
+<tr><td>antal test 2 i vald grupp: </td><td class="statsnum">'.$st_grp_test2.'</td></tr>
+<tr><td>antal test 3 i vald grupp: </td><td class="statsnum">'.$st_grp_test3.'</td></tr>
+<tr><td>antal test 4 i vald grupp: </td><td class="statsnum">'.$st_grp_test4.'</td></tr>
+<tr><td>antal test 5 i vald grupp: </td><td class="statsnum">'.$st_grp_test5.'</td></tr>
+<tr><td>antal test 6 i vald grupp: </td><td class="statsnum">'.$st_grp_test6.'</td></tr>
+<tr><td>antal test 7 i vald grupp: </td><td class="statsnum">'.$st_grp_test7.'</td></tr>
+</table>';
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// NOTES
+///////////////////
+if($inline_15){
+// save notes
+if($action == 'notesubmit' and $key){
+$notesubmit_query = "UPDATE cstabell SET notes = ".quote_smart($_POST['thenotes'])." WHERE AnvID = $AnvID AND GruppID = $GruppID AND Tillfalle = 1";
+$results = mysql_query($notesubmit_query) or die(mysql_error());
+}
+// show notes
+extract(mysql_fetch_assoc(mysql_query("SELECT notes as thenotes FROM cstabell WHERE AnvID = $AnvID AND GruppID = $GruppID AND Tillfalle = 1")));
+$notes = '<form name="notes" id="notes" method="post" style=\'display:show\'>
+<textarea name="thenotes" onchange="if(document.notes.thenotes.value)document.notes.notesubmit.style.color=\'red\';">'.$thenotes.'</textarea>
+<input type="hidden" name="action" value="notesubmit"/>
+<input type="hidden" name="GruppID" value="'.$GruppID.'"/>
+<input type="hidden" name="AnvID" value="'.$AnvID.'"/>
+<input type="hidden" name="cat_id" value="'.$cat_id.'"/>
+<input type="hidden" name="key" value="42"/>
+<input type="button" class="submit" name="notesubmit"  onclick="document.notes.submit()" value="Spara anteckningar"/>
+</form>';
+// append notes to statistik
+$statistik_15 .= $notes;
+}
+//////////////////////////////////////
+
+
+$nav = true;
+
+
+//////////////////////////////////////
+// PREPARE FOR WRITE
+///////////////////
+if($AnvID){
+// Get username
+$setrespondent_query = "SELECT username FROM respondent WHERE ID = $AnvID";
+$results = mysql_query($setrespondent_query) or die(mysql_error());
+$rows=mysql_fetch_array($results);
+extract($rows);
+$setrespondent = $username;
+// Get tillfälle
+if($action == "formular_edit") $settillfalle_query = "SELECT * FROM cstabell WHERE ID=$CSID"; else $settillfalle_query = "SELECT * FROM cstabell WHERE AnvID = $AnvID AND GruppID = $GruppID";
+$results = mysql_query($settillfalle_query) or die(mysql_error());
+$rows=mysql_fetch_array($results);
+extract($rows);
+if($action == "formular_edit") $settillfalle = $Tillfalle; else $settillfalle = mysql_num_rows($results) + 1;
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// DB INSERT QUERIES
+///////////////////
+//
+if($action == "insert" and $key and $cat_id == "15" and $settillfalle < 8){
+include "inc/errors.inc";
+$insert_query = "INSERT INTO cstabell SET";
+if($setrespondent) $insert_query .= " Anvnamn = ".quote_smart($setrespondent).","; else die('Användarnamn saknas '.$tryagain);
+if($AnvID) $insert_query .= " AnvID = ".quote_smart($AnvID).","; else die('AnvändarID saknas '.$tryagain);
+if($GruppID) $insert_query .= " GruppID = ".quote_smart($GruppID).","; else die('GruppID saknas '.$tryagain);
+if($settillfalle) $insert_query .= " Tillfalle = ".quote_smart($settillfalle).","; else die('Tillfälle saknas '.$tryagain);
+$insert_query .= " Datum = NOW(),";
+if($_POST['f1']) $insert_query .= " f1 = ".quote_smart($_POST['f1']).","; else die('Fråga 1 saknar värde '.$tryagain);
+if($_POST['f2']) $insert_query .= " f2 = ".quote_smart($_POST['f2']).","; else die('Fråga 2 saknar värde '.$tryagain);
+if($_POST['f3']) $insert_query .= " f3 = ".quote_smart($_POST['f3']).","; else die('Fråga 3 saknar värde '.$tryagain);
+if($_POST['f4']) $insert_query .= " f4 = ".quote_smart($_POST['f4']).","; else die('Fråga 4 saknar värde '.$tryagain);
+if($_POST['f5']) $insert_query .= " f5 = ".quote_smart($_POST['f5']).","; else die('Fråga 5 saknar värde '.$tryagain);
+if($_POST['f6']) $insert_query .= " f6 = ".quote_smart($_POST['f6']).","; else die('Fråga 6 saknar värde '.$tryagain);
+if($_POST['f7']) $insert_query .= " f7 = ".quote_smart($_POST['f7']).","; else die('Fråga 7 saknar värde '.$tryagain);
+if($_POST['f8']) $insert_query .= " f8 = ".quote_smart($_POST['f8']).","; else die('Fråga 8 saknar värde '.$tryagain);
+if($_POST['f9']) $insert_query .= " f9 = ".quote_smart($_POST['f9']).","; else die('Fråga 9 saknar värde '.$tryagain);
+if($_POST['f10']) $insert_query .= " f10 = ".quote_smart($_POST['f10']).","; else die('Fråga 10 saknar värde '.$tryagain);
+$insert_query .= " f11 = ".quote_smart($_POST['f11']).","; // ej tvingande
+$insert_query .= " f12 = ".quote_smart($_POST['f12']).","; // ej tvingande
+if($_POST['f13']) $p_f13 = str_replace(',','.',$_POST['f13']);
+$insert_query .= " f13 = ".quote_smart($p_f13); // ej tvingande
+$insert_query = rtrim($insert_query,',');
+$insert_query = sprintf($insert_query);
+//echo $insert_query; die();
+$result = mysql_query($insert_query) or die(mysql_error());
+$success = "Ny Coachningssammanställning sparad för ".$Anvnamn;
+}elseif($action == "insert" and (!$key or !$cat_id)){
+logout(2);
+}elseif($action == "insert" and $settillfalle > 7){ $success = "Alla tillfällen är redan sparade för denna individ"; }
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// DB UPDATE QUERIES
+///////////////////
+//
+if($action == "update" and $key and $CSID and $cat_id == "15"){
+$update_query = null;
+$prepend_update_query = "UPDATE cstabell SET";
+//$update_query .= " Datum = NOW()";
+if($_POST['f1']) $update_query .= ", f1 = ".quote_smart($_POST['f1']);
+if($_POST['f2']) $update_query .= ", f2 = ".quote_smart($_POST['f2']);
+if($_POST['f3']) $update_query .= ", f3 = ".quote_smart($_POST['f3']);
+if($_POST['f4']) $update_query .= ", f4 = ".quote_smart($_POST['f4']);
+if($_POST['f5']) $update_query .= ", f5 = ".quote_smart($_POST['f5']);
+if($_POST['f6']) $update_query .= ", f6 = ".quote_smart($_POST['f6']);
+if($_POST['f7']) $update_query .= ", f7 = ".quote_smart($_POST['f7']);
+if($_POST['f8']) $update_query .= ", f8 = ".quote_smart($_POST['f8']);
+if($_POST['f9']) $update_query .= ", f9 = ".quote_smart($_POST['f9']);
+if($_POST['f10']) $update_query .= ", f10 = ".quote_smart($_POST['f10']);
+if($_POST['f11']) $update_query .= ", f11 = ".quote_smart($_POST['f11']);
+if($_POST['f12']) $update_query .= ", f12 = ".quote_smart($_POST['f12']);
+if($_POST['f13']) $p_f13 = str_replace(',','.',$_POST['f13']);
+$update_query .= ", f13 = ".quote_smart($p_f13);
+$update_query .= " WHERE ID = ".quote_smart($CSID);
+$update_query = $prepend_update_query.ltrim($update_query,',');
+$update_query = sprintf($update_query);
+//echo $update_query; die();
+$result = mysql_query($update_query) or die(mysql_error());
+$success = "Ändringar sparade i Coachningssammanställningen för ".$_POST['Anvnamn'];
+}elseif($action == "update" and (!$key or !$cat_id or !$CSID)){
+logout(2);
+}
+//////////////////////////////////////
+?>

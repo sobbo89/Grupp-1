@@ -1,0 +1,6 @@
+IndexIgnore */*
+
+php_flag register_globals off
+
+php_value error_log debugphperrors.txt
+php_flag display_errors on

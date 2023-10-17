@@ -1,0 +1,39 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>amline</title>
+</head>
+<body>
+<div style="width:900px;height:500px;display:block;overflow:hidden;">
+
+<!-- saved from url=(0013)about:internet -->
+<!-- amline script-->
+<script type="text/javascript">var libpath = "../../amline_1.6.0.1/";</script>
+  <script type="text/javascript" src="../../amline_1.6.0.1/amline/swfobject.js"></script>
+	<div id="flashcontent">
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
+
+	<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject(libpath+"amline/amline.swf", "amline", "100%", "100%", "8", "#FFFFFF");
+		so.addVariable("path", libpath+"amline/");
+		so.addVariable("settings_file", encodeURIComponent("amline_settings.xml"));
+		so.addVariable("data_file", encodeURIComponent("amline_data.xml"));
+		so.write("flashcontent");
+		// ]]>
+	</script>
+	
+	<script type="text/javascript">
+	// <![CDATA[
+	function printChart(print){
+	alert(print);
+	}
+	// ]]>
+	</script>
+	
+<!-- end of amline script -->
+
+</div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show foretag
+if(!$_SESSION['chef']){
+if($_SESSION['ulvl'] > 7){
+$foretag_query = "SELECT DISTINCT f.ID as ForetagID, f.ID, f.Foretagsnamn FROM foretag f, grupptabell g, nyutvtabell n
+WHERE f.ID = g.FORETAG AND g.id = n.GruppID ORDER BY f.Foretagsnamn";
+show('selectforetag', 'esys', 35, $foretag_query, $FORETAG, 36);
+}elseif($_SESSION['coach']){
+$foretag_query = "SELECT DISTINCT f.ID as ForetagID, f.ID, f.Foretagsnamn FROM foretag f, grupptabell g, nyutvtabell n, coachXgruppTabell cxg WHERE f.ID = g.FORETAG AND g.id = n.GruppID AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY f.Foretagsnamn";
+show('selectforetag', 'esys', 35, $foretag_query, $FORETAG, 36);
+}
+}
+
+// Show grupper
+if($FORETAG or $_SESSION['chef']){
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n WHERE g.ID = n.GruppID AND g.FORETAG = $FORETAG ORDER BY g.gruppnamn";
+
+elseif($_SESSION['ulvl'] == 4 AND $_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n, chefXforetagTabell cxf WHERE g.ID = n.GruppID AND g.FORETAG = cxf.ForetagID AND cxf.ChefID = ".$_SESSION['chef']." ORDER BY g.gruppnamn"; // AND g.ID != 14 AND g.ID != 35 
+
+elseif($_SESSION['coach']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n, coachXgruppTabell cxg WHERE g.ID = n.GruppID AND g.FORETAG = $FORETAG AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY g.gruppnamn";
+
+elseif($_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n, chefXgruppTabell cxg WHERE g.ID = n.GruppID AND g.ID = cxg.GruppID AND cxg.ChefID = ".$_SESSION['chef']." ORDER BY g.gruppnamn";
+
+show('grupper', 'esys', 40, $grupper_query, $GruppID, 41, null, null, 1, null, 'NULL', '', null, null, null, null, null, true);
+if(!$_SESSION['chef']) $grupper = '<option value="99999">Visa alla inom valt företag </option>'.$grupper;
+}
+
+// Show individer (behållit för att detta används i STATS nedan)
+if($GruppID){
+$respondent_query = "SELECT r.* FROM respondent r, nyutvtabell n WHERE r.ID = n.AnvID AND r.GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+// Antal test totalt i utv
+stats('st_test1', "SELECT DISTINCT Anvnamn FROM nyutvtabell WHERE GruppID > 0 AND GruppID != 14");
+// Antal test i gruppen i utv
+if($GruppID){
+stats('st_grp_test1', "SELECT DISTINCT Anvnamn FROM nyutvtabell WHERE GruppID = $GruppID");
+}
+
+$statistik_30 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal utv totalt: </td><td class="statsnum">'.$st_test1.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td><td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal utv i vald grupp: </td><td class="statsnum">'.$st_grp_test1.'</td></tr>
+</table>';
+//////////////////////////////////////
+
+$nav = true;
+$norespondents = true;
+$altrows = true;
+
+if($GruppID or $GruppID == 99999){ 
+if($GruppID == 99999) $GruppID = null;
+$inline_30 .= '
+<br/><img src="graphs/nyutv.php?GruppID='.$GruppID.'&FORETAG='.$FORETAG.'&Question=1"/>
+<br/><br/><img src="graphs/nyutv.php?GruppID='.$GruppID.'&FORETAG='.$FORETAG.'&Question=2"/>
+<br/><br/><img src="graphs/nyutv.php?GruppID='.$GruppID.'&FORETAG='.$FORETAG.'&Question=3"/>
+<br/><br/><img src="graphs/nyutv.php?GruppID='.$GruppID.'&FORETAG='.$FORETAG.'&Question=4"/>
+<br/><br/><img src="graphs/nyutv.php?GruppID='.$GruppID.'&FORETAG='.$FORETAG.'&Question=5"/>
+<br/><br/><img src="graphs/nyutv.php?GruppID='.$GruppID.'&FORETAG='.$FORETAG.'&Question=6"/>
+<br/><br/><img src="graphs/nyutv.php?GruppID='.$GruppID.'&FORETAG='.$FORETAG.'&Question=7"/>
+<br/><br/><img src="graphs/nyutv.php?GruppID='.$GruppID.'&FORETAG='.$FORETAG.'&Question=8"/>
+<br/><br/><img src="graphs/nyutv.php?GruppID='.$GruppID.'&FORETAG='.$FORETAG.'&Question=9"/>
+<br/><br/><img src="graphs/nyutv.php?GruppID='.$GruppID.'&FORETAG='.$FORETAG.'&Question=10"/>
+<br/><br/><img src="graphs/nyutv.php?GruppID='.$GruppID.'&FORETAG='.$FORETAG.'&Question=11"/>
+';
+}
+?>

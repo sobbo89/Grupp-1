@@ -1,0 +1,71 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, utvtabell u WHERE g.ID = u.GruppID ORDER BY gruppnamn"; else $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, utvtabell u, coachXgruppTabell cxg WHERE g.ID = u.GruppID AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+show('grupper', 'esys', 1, $grupper_query, $GruppID, 2);
+// Show individer
+if($GruppID){
+$respondent_query = "SELECT r.* FROM respondent r, utvtabell u WHERE r.ID = u.AnvID AND r.GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show tillfallen inline
+if($AnvID){
+$inline_16_query = "SELECT * FROM utvtabell WHERE AnvID = $AnvID AND GruppID = $GruppID";
+show('inline_16', 'esys', 13, $inline_16_query, null, 1, null, $cat_id, 1, null, 'NULL', '', 1);
+}
+// Show tillfalle
+//if($CSID){
+//$anvandare_15_query = "SELECT * FROM cstabell WHERE AnvID = $AnvID AND GruppID = $GruppID AND ID = $CSID";
+//show('anvandare_15', 'esys', 7, $anvandare_15_query);
+//}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+// Antal test totalt i utv
+stats('st_test1', "SELECT DISTINCT Anvnamn FROM utvtabell WHERE GruppID > 0 AND GruppID != 14");
+// Antal test i gruppen i utv
+if($GruppID){
+stats('st_grp_test1', "SELECT DISTINCT Anvnamn FROM utvtabell WHERE GruppID = $GruppID");
+}
+
+$statistik_16 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal utv totalt: </td><td class="statsnum">'.$st_test1.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td><td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal utv i vald grupp: </td><td class="statsnum">'.$st_grp_test1.'</td></tr>
+</table>';
+//////////////////////////////////////
+
+$nav = true;
+$altrows = true;
+
+if($GruppID){
+$inline_16 .= '<br/><br/>Kommentarer:<br/>';
+$results = mysql_query("SELECT f11 FROM utvtabell WHERE GruppID = $GruppID") or die(mysql_error());
+while($rows = mysql_fetch_array($results)){
+extract($rows);
+if($f11) $inline_16 .= '<br/>"'.$f11.'"<br/>';
+}
+}
+?>

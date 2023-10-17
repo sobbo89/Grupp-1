@@ -1,0 +1,103 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT * FROM grupptabell ORDER BY gruppnamn"; else $grupper_query = "SELECT g.* FROM grupptabell g, coachXgruppTabell cxg WHERE g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+show('grupper', 'esys', 1, $grupper_query, $GruppID, 2);
+// Show individer
+if($GruppID){
+$respondent_query = "SELECT * FROM respondent WHERE GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show coacher
+$catz_query = "SELECT * FROM categories order by SORT";
+show('catz', 'esys', 20, $catz_query);
+
+//$inline_31_query = "SELECT cxgtt.ID, gtt.gruppnamn, ctt.coachnamn FROM coachXgruppTabell cxgtt, grupptabell gtt, coachtabell ctt WHERE cxgtt.gruppID = gtt.ID AND cxgtt.coachID = ctt.ID ORDER BY ctt.coachnamn";
+
+$inline_31_query = "SELECT ul.ID, ul.ulvl, cat.title FROM ulvlXcat ul, categories cat WHERE ul.CatID = cat.ID ORDER BY ul.ulvl, cat.SORT";
+show('inline_31_add', 'esys', 21, $inline_31_query, null, 1, null, $cat_id);
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SELECTOR (instead of nav)
+///////////////////
+$inline_31 ='
+<form name="selectcxg" id="selectcxg" method="post">
+
+<select name="catz_ID" class="selector">
+<option value="">Välj aktivitetsnamn: &nbsp; </option>
+'.$catz.'
+</select>
+
+<select name="ulvln" class="selector">
+<option value="">Välj användarnivå: &nbsp; </option>
+<option value="1"> 1 = testtagare </option>
+<option value="2"> 2 = chefer </option>
+<option value="4"> 4 = superchefer </option>
+<option value="6"> 6 = coacher </option>
+<option value="8"> 8 = allt utom utveckling </option>
+</select>
+
+<input type="hidden" name="cat_id" value="'.$cat_id.'"/>
+<input type="hidden" name="key" value="42"/>
+<input type="hidden" name="action" value="insert"/>
+<input type="button" class="submit" onclick="document.selectcxg.submit();" value="Skapa koppling"/>
+</form>
+<br/><br/>
+<form name="listcxg" id="listcxg" method="post">
+<table id="table31">
+'.$inline_31_add.'
+</table>
+<input type="hidden" name="cxgid" value=""/>
+<input type="hidden" name="cat_id" value="'.$cat_id.'"/>
+<input type="hidden" name="key" value="42"/>
+<input type="hidden" name="action" value="delete"/>
+</form>';
+//////////////////////////////////////
+
+$nav = null;
+$altrows = null;
+
+//////////////////////////////////////
+// DB INSERT QUERIES
+///////////////////
+//
+if($action == "insert" and $key and $cat_id == "31"){
+include "inc/errors.inc";
+$insert_query = "INSERT INTO ulvlXcat VALUES(DEFAULT(ID)";
+if($_POST['ulvln']) $insert_query .= ", ".quote_smart($_POST['ulvln']); else die('Användarnivå saknas '.$tryagain);
+if($_POST['catz_ID']) $insert_query .= ", ".quote_smart($_POST['catz_ID']); else die('Aktivitet saknas '.$tryagain);
+$insert_query .= ")";
+$insert_query = sprintf($insert_query);
+//echo $insert_query; die();
+$result = mysql_query($insert_query) or die(mysql_error());
+$success = "Ny koppling sparad";
+}elseif($action == "insert" and (!$key or !$cat_id)){
+logout(2);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// DB DELETE QUERIES
+///////////////////
+//
+if($action == "delete" and $key and ($_POST['cxgid']) and $cat_id == "31"){
+$delete_query = "DELETE FROM ulvlXcat WHERE ID =".quote_smart($_POST['cxgid']);
+$delete_query = sprintf($delete_query);
+//echo $delete_query; die();
+$result = mysql_query($delete_query) or die(mysql_error());
+$success = "Kopplingen borttagen";
+}elseif($action == "delete" and (!$key or !$cat_id or !($_POST['cxgid']))){
+logout(2);
+}
+//////////////////////////////////////
+?>

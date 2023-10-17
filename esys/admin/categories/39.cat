@@ -1,0 +1,107 @@
+﻿<?php
+
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, cstabell c WHERE g.ID = c.GruppID ORDER BY gruppnamn";
+elseif($_SESSION['ulvl'] == 4 AND $_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, cstabell c, chefXforetagTabell cxf WHERE g.ID = c.GruppID AND g.FORETAG = cxf.ForetagID AND cxf.ChefID = ".$_SESSION['chef']." ORDER BY gruppnamn";
+elseif($_SESSION['coach']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, cstabell c, coachXgruppTabell cxg WHERE g.ID = c.GruppID AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+elseif($_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, cstabell c, chefXgruppTabell cxg WHERE g.ID = c.GruppID AND g.ID = cxg.GruppID AND cxg.ChefID = ".$_SESSION['chef']." ORDER BY gruppnamn";
+else $AnvID = $_SESSION['anv'];
+
+if(!$_SESSION['chef']){
+$valjforetag = '';
+$foretag_query = "SELECT ID as id, FORETAGSNAMN as gruppnamn FROM foretag";
+show('valjforetag', 'esys', 1, $foretag_query, $FORETAG, 2);
+}elseif($_SESSION['chef'] AND $_SESSION['ulvl'] == 4){
+$getforetag = mysql_fetch_array(mysql_query("SELECT ForetagID FROM chefXforetagTabell WHERE ChefID = ".$_SESSION['chef']));
+$FORETAG = $getforetag[0];
+}
+
+show('grupper', 'esys', 1, $grupper_query, $GruppID, 2);
+
+if($kon == 'Alla') $koncont = '<option value="Alla" selected="selected">Alla</option>'; else $koncont = '<option value="Alla">Alla</option>';
+if($kon == 'Man') $koncont .= '<option value="Man" selected="selected">Män</option>'; else $koncont .= '<option value="Man">Män</option>';
+if($kon == 'Kvinna') $koncont .= '<option value="Kvinna" selected="selected">Kvinnor</option>'; else $koncont .= '<option value="Kvinna">Kvinnor</option>';
+
+$alder = ' &nbsp; Från <input type="text" name="alderstart" size="2" maxlength="2" value="'.$alderstart.'"/> till <input type="text" name="alderstopp" size="2" maxlength="2" value="'.$alderstopp.'"/> år';
+$tillfallen = '<br/><br/> &nbsp; Mellan tillfälle <input type="text" name="tillfallestart" size="2" maxlength="2" value="'.$tillfallestart.'"/> och <input type="text" name="tillfallestopp" size="2" maxlength="2" value="'.$tillfallestopp.'"/>';
+$visaklara = ' &nbsp; Visa endast de som genomfört alla valda tillfällen <input type="checkbox" name="baraklara" value="'.$baraklara.'" checked="checked"/> &nbsp; ';
+$visaknapp = ' &nbsp; <input type="submit" value="visa" style="padding-left:12px;padding-right:12px;font-weight:bold;"/> &nbsp; ';
+$utskriftval = ' &nbsp; <input type="checkbox" name="forutskrift" value="1"/> <em>för utskrift<em>';
+
+// Show individer
+if($GruppID){
+$respondent_query = "SELECT DISTINCT r.* FROM respondent r, cstabell c WHERE r.ID = c.AnvID AND r.GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+// Antal test totalt i cs
+stats('st_test1', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 1");
+stats('st_test2', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 2");
+stats('st_test3', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = 3");
+// Antal test i gruppen i cs
+if($GruppID){
+stats('st_grp_test1', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 1");
+stats('st_grp_test2', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 2");
+stats('st_grp_test3', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID = $GruppID AND Tillfalle = 3");
+}
+
+$statistik_39 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal test 1 totalt: </td><td class="statsnum">'.$st_test1.'</td></tr>
+<tr><td>antal test 2 totalt: </td><td class="statsnum">'.$st_test2.'</td></tr>
+<tr><td>antal test 3 totalt: </td><td class="statsnum">'.$st_test3.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td><td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal test 1 i vald grupp: </td><td class="statsnum">'.$st_grp_test1.'</td></tr>
+<tr><td>antal test 2 i vald grupp: </td><td class="statsnum">'.$st_grp_test2.'</td></tr>
+<tr><td>antal test 3 i vald grupp: </td><td class="statsnum">'.$st_grp_test3.'</td></tr>
+</table>';
+//////////////////////////////////////
+
+$nav = true;
+$norespondents = true;
+
+if($GruppID or $FORETAG){
+
+if($FORETAG) $query_insert = " AND r.GruppID = g.id AND g.FORETAG = $FORETAG";
+if($GruppID) $query_insert = " AND r.GruppID = $GruppID";
+
+// ID, tillfalle, watt, puls, kön, ålder(födelseår)
+// $individ[ID][tillfalle]['post'] = värde;
+$query = "SELECT r.ID, cs.Tillfalle, cs.f11, cs.f12, cs.f13, l.f2, l.f3 FROM respondent r, livsstil l, grupptabell g, cstabell cs 
+WHERE r.ID = cs.AnvID AND r.username = l.Anvnamn".$query_insert;
+
+$results = mysql_unbuffered_query($query);
+while($rows=mysql_fetch_assoc($results)){
+//echo $rows[0];
+$individ[$rows['ID']][$rows['Tillfalle']]['watt'] = $rows['f11'];
+$individ[$rows['ID']][$rows['Tillfalle']]['puls'] = $rows['f12'];
+$individ[$rows['ID']][$rows['Tillfalle']]['vikt'] = $rows['f13'];
+$individ[$rows['ID']][$rows['Tillfalle']]['kon'] = $rows['f2'];
+$individ[$rows['ID']][$rows['Tillfalle']]['alder'] = age_gate($rows['f3']); //abs(intval(date("Y")) - intval($rows[5]));
+}
+print_r($individ);
+
+
+
+$inline_39 .= '<br/><br/>';
+}
+?>

@@ -1,0 +1,12 @@
+<?php
+$str = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="sv" />
+<meta name="robots" content="noindex,nofollow" />
+<title>webbutvecklarna : whatform : niana esys 2.0</title>
+</head>
+<a class="listlink" href="?action=select&cat_id=28">CS Diagram</a><a class="listlink" href="?action=select&cat_id=40">CS Fältdiagram</a><a class="listlink" href="?action=select&cat_id=22">CS Statistik</a><a class="listlink" href="?action=select&cat_id=39">CS Testvärdetabell</a><a class="listlink" href="?action=select&cat_id=24">Chefer</a><a class="listlink" href="?action=select&cat_id=34">Chefer > Foretag</a><a class="listlink" href="?action=select&cat_id=25">Chefer > Grupper</a><a class="listlink" href="?action=select&cat_id=23">Chefernas utvärdering</a><a class="listlink" href="?action=select&cat_id=26">Chefsutv Diagram</a><a class="listlink" href="?action=select&cat_id=18">Coacher</a><a class="listlink" href="?action=select&cat_id=37">Coacher > Företag</a><a class="listlink" href="?action=select&cat_id=20">Coacher > Grupper</a><a class="listlink" href="?action=select&cat_id=38">Coacher > Individer</a><a class="listlink" href="?action=select&cat_id=36">Coachförval</a><a class="listlink" href="?action=select&cat_id=15">Coachningssammanställning</a><a class="listlink" href="?action=select&cat_id=19">Grupper</a><a class="listlink" href="?action=select&cat_id=17">Livsstilsprofil</a><a class="listlink" href="?action=select&cat_id=35">Roller</a><a class="listlink" href="?action=select&cat_id=33">Uppföljningsprofil</a><a class="listlink" href="?action=select&cat_id=16">Utvärdering</a><a class="listlink" href="?action=select&cat_id=27">Utvärdering Diagram</a><a class="listlink" href="?action=select&cat_id=29">Ny utvärdering</a><a class="listlink" href="?action=select&cat_id=30">Ny utv diagram</a><a class="listlink" href="?action=select&cat_id=31">Användarnivåer</a><a class="listlink" href="?action=select&cat_id=21">Hjälp</a><a class="listlink" href="?action=select&cat_id=32">Coacher statistik</a></div>';
+
+echo str_replace('</a>','</a><br/>',$str);
+?>

@@ -1,0 +1,126 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show grupper
+$inline_19_query = "SELECT g.id, g.gruppnamn, g.grupplogin, g.grupplosen, g.FORETAG, g.andrat, f.ID, f.Foretagsnamn, f.Foretagslank FROM grupptabell g, foretag f WHERE g.FORETAG = f.ID ORDER BY f.Foretagsnamn, g.gruppnamn";
+show('inline_19', 'esys', 9, $inline_19_query, null, 1, null, $cat_id);
+// prepend and append to result
+$inline_19 = '<br/><br/><strong>Klicka på ett gruppnamn nedan för att redigera eller <a href="?action=formular&cat_id=19">LÄGG TILL EN NY GRUPP</a></strong><br/><br/>
+<table id="table19">
+	<tr>
+		<th>Företag</th>
+		<th>Gruppnamn</th>
+		<th>Grupplogin</th>
+		<th>Grupplösenord</th>
+	</tr>'
+	.$inline_19.
+	'</table>';
+
+
+//////////////////////////////////////
+
+$nav = null;
+$altrows = true;
+
+//////////////////////////////////////
+// PREPARE FOR WRITE
+///////////////////
+if($action == "formular_edit"){
+$settillfalle_query = "SELECT * FROM grupptabell WHERE id=$grupper_GruppID";
+$results = mysql_query($settillfalle_query) or die(mysql_error());
+$rows=mysql_fetch_array($results);
+extract($rows,EXTR_PREFIX_ALL,"grupper");
+$settillfalle = 1;
+}elseif($action == "formular"){
+$settillfalle = 1;
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// DB INSERT QUERIES
+///////////////////
+//
+if($action == "insert" and $key and $cat_id == "19"){
+include "inc/errors.inc";
+$insert_query = "INSERT INTO grupptabell VALUES(DEFAULT(id)";
+if($_POST['gruppnamn']) $insert_query .= ", ".quote_smart($_POST['gruppnamn']); else die('Gruppnamn saknas '.$tryagain);
+if($_POST['grupplogin']) $insert_query .= ", ".quote_smart($_POST['grupplogin']); else die('Grupplogin saknas '.$tryagain);
+if($_POST['grupplosen']) $insert_query .= ", ".quote_smart($_POST['grupplosen']); else die('Grupplosen saknas '.$tryagain);
+if($_POST['FORETAG']) $insert_query .= ", ".quote_smart($_POST['FORETAG']); else die('Foretag saknas '.$tryagain);
+$insert_query .= ", NOW()";
+$insert_query .= ")";
+$insert_query = sprintf($insert_query);
+//echo $insert_query; die();
+$result = mysql_query($insert_query) or die(mysql_error());
+$success = $_POST['gruppnamn']." sparad som ny Grupp";
+}elseif($action == "insert" and (!$key or !$cat_id)){
+logout(2);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// DELETE ARE YOU SURE?
+///////////////////
+//
+if($action == "update" and $key == 'delete' and (($_POST['delval'] and $grupper_GruppID) and ($_POST['delval'] = $grupper_GruppID))  and $cat_id == "19"){
+$inline_19 = '<br/><br/>
+<strong>Är du verkligen säker på att du vill ta bort '.$_POST['gruppnamn'].' permanent</strong><br/><br/>
+<form name="form_19" class="formz" method="post">
+<input type="hidden" name="gruppnamn" value="'.$_POST['gruppnamn'].'"/>
+<input type="hidden" name="cat_id" value="'.$cat_id.'"/>
+<input type="hidden" name="grupper_GruppID" value="'.$grupper_GruppID.'"/>
+<input type="hidden" name="delval" value=""/>
+<input type="hidden" name="key" value="42"/>
+<input type="hidden" name="action" value="delete"/>
+<input type="button" class="submit" onclick="javascript:window.location=\'index.php?cat_id='.$cat_id.'\';" value="Avbryt"/> &nbsp; &nbsp; 
+<input type="button" class="submit" onclick="document.form_19.delval.value='.$grupper_GruppID.';document.form_19.key.value=\'delete\';document.form_19.submit();" value="Ta bort"/> &nbsp; &nbsp; 
+</form>
+';
+unset($action);
+}elseif($key == 'delete' and (!($_POST['delval']) or !action or !$cat_id or !$grupper_GruppID)){
+logout(2);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// DB DELETE QUERIES
+///////////////////
+//
+if($action == "delete" and $key == 'delete' and (($_POST['delval'] and $grupper_GruppID) and ($_POST['delval'] = $grupper_GruppID))  and $cat_id == "19"){
+$delete_query = "DELETE FROM grupptabell WHERE id =".quote_smart($grupper_GruppID);
+$delete_query = sprintf($delete_query);
+//echo $delete_query; die();
+$result = mysql_query($delete_query) or die(mysql_error());
+$success = $_POST['gruppnamn']." är borttagen";
+unset($action);
+}elseif($key == 'delete' and (!($_POST['delval']) or !action or !$cat_id or !$grupper_GruppID)){
+logout(2);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// DB UPDATE QUERIES
+///////////////////
+//
+if($action == "update" and $key and $grupper_GruppID and $cat_id == "19"){
+$update_query = "UPDATE grupptabell SET";
+if($_POST['gruppnamn']) $update_query .= " gruppnamn = ".quote_smart($_POST['gruppnamn']).",";
+if($_POST['grupplogin']) $update_query .= " grupplogin = ".quote_smart($_POST['grupplogin']).",";
+if($_POST['grupplosen']) $update_query .= " grupplosen = ".quote_smart($_POST['grupplosen']).",";
+if($_POST['FORETAG']) $update_query .= " FORETAG = ".quote_smart($_POST['FORETAG']).",";
+$update_query .= " andrat = NOW()";
+$update_query .= " WHERE id = ".quote_smart($grupper_GruppID);
+$update_query = sprintf($update_query);
+//echo $update_query; die();
+$result = mysql_query($update_query) or die(mysql_error());
+$success = "Ändringar sparade för ".$_POST['gruppnamn'];
+}elseif($action == "update" and (!$key or !$cat_id or !$grupper_GruppID)){
+logout(2);
+}
+//////////////////////////////////////
+?>

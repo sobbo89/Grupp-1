@@ -1,0 +1,335 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW 
+///////////////////
+if(!$_SESSION['anv']){
+// Show foretag
+if(!$_SESSION['chef']){
+$foretag_query = "SELECT DISTINCT f.ID as ForetagID, f.ID, f.Foretagsnamn FROM foretag f, grupptabell g, cstabell c WHERE f.ID = g.FORETAG AND g.id = c.GruppID ORDER BY f.Foretagsnamn";
+show('selectforetag', 'esys', 35, $foretag_query, $FORETAG, 36);
+}elseif($_SESSION['chef']){
+$getforetag = mysql_fetch_array(mysql_query("SELECT ForetagID FROM chefXforetagTabell WHERE ChefID = ".$_SESSION['chef']));
+$FORETAG = $getforetag[0];
+}
+
+//$inline_42 .= 'baraklara: '.$baraklara.' tillfallestopp: '.$tillfallestopp.'<br/>'; // debug
+
+// Show grupper
+if($FORETAG){ //  or $_SESSION['chef']
+
+if($_SESSION['filtergroups']) $grupper_query_insert = " AND c.Tillfalle = $tillfallestopp";
+
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c WHERE g.ID = c.GruppID AND g.FORETAG = $FORETAG ".$grupper_query_insert." ORDER BY g.gruppnamn";
+
+elseif($_SESSION['ulvl'] == 4 AND $_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c, chefXforetagTabell cxf WHERE g.ID = c.GruppID AND g.FORETAG = cxf.ForetagID AND cxf.ChefID = ".$_SESSION['chef']." ".$grupper_query_insert." ORDER BY g.gruppnamn"; // AND g.ID != 14 AND g.ID != 35 
+
+elseif($_SESSION['coach']) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c, coachXgruppTabell cxg WHERE g.ID = c.GruppID AND g.FORETAG = $FORETAG AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ".$grupper_query_insert." ORDER BY g.gruppnamn";
+
+elseif($_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c, chefXgruppTabell cxg WHERE g.ID = c.GruppID AND g.ID = cxg.GruppID AND cxg.ChefID = ".$_SESSION['chef']." ".$grupper_query_insert." ORDER BY g.gruppnamn";
+
+else $AnvID = $_SESSION['anv'];
+
+/*
+show('grupper', 'esys', 33, $grupper_query, $GruppID, 34, null, null, 1, null, 'NULL', '', null, null, null, true);
+if(!$_SESSION['chef']) $grupper = '<option value="">Visa alla inom valt företag </option>'.$grupper;
+
+if($kon == 'Alla') $koncont = '<option value="Alla" selected="selected">Alla</option>'; else $koncont = '<option value="Alla">Alla</option>';
+if($kon == 'Man') $koncont .= '<option value="Man" selected="selected">Män</option>'; else $koncont .= '<option value="Man">Män</option>';
+if($kon == 'Kvinna') $koncont .= '<option value="Kvinna" selected="selected">Kvinnor</option>'; else $koncont .= '<option value="Kvinna">Kvinnor</option>';
+
+if($_SESSION['filtergroups'] < 1) $filtreragrupper =  '&nbsp; <input type="button" value="filtrera" onclick="document.nav.subaction.value=\'filtergroups\';document.nav.submit();" class="navbutton" style="font-weight:normal;font-style:italic;"/> &nbsp; ';
+
+if($_SESSION['filtergroups'] > 0) $filtreragrupper =  '&nbsp; <input type="button" value="filtrera inte" onclick="document.nav.subaction.value=\'dontfiltergroups\';document.nav.submit();" class="navbutton" style="font-weight:normal;font-style:italic;"/> &nbsp; ';
+
+$alder = ' &nbsp; Från <input type="text" name="alderstart" size="2" maxlength="2" value="'.$alderstart.'"/> till <input type="text" name="alderstopp" size="2" maxlength="2" value="'.$alderstopp.'"/> år';
+*/
+$tillfallen = '<br/><br/>Mellan tillfälle <input type="text" name="tillfallestart" size="2" maxlength="2" value="'.$tillfallestart.'"/> och <input type="text" name="tillfallestopp" size="2" maxlength="2" value="'.$tillfallestopp.'"/>';
+if($baraklara OR !$FORETAG OR !$GruppID) $baracheck = 'checked="checked"';
+$visaklara = ' &nbsp; Visa endast de som genomfört alla valda tillfällen <input type="checkbox" name="baraklara" value="1" '.$baracheck.'/> &nbsp; ';
+$visaknapp = ' &nbsp; <input type="button" onclick="document.nav.subaction.value=\'showcharts\';document.nav.submit();" value="visa" class="navbutton" style="font-weight:bold;"/> &nbsp; <input type="hidden" name="subaction" value=""/>';
+$utskriftval = ' &nbsp; <input type="checkbox" name="forutskrift" value="1"/> <em>för utskrift<em>';
+
+} // END IF FORETAG
+
+// Show individer (behållit för att detta används i STATS nedan)
+if($GruppID){
+$respondent_query = "SELECT DISTINCT r.* FROM respondent r, cstabell c WHERE r.ID = c.AnvID AND r.GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+
+$statistik_42 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');return false;">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>';
+
+// loopa bunch
+for ($i = 1; $i <= 7; $i++){
+// Antal test totalt i cs
+stats('st_test', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = $i");
+// Antal test i gruppen i cs
+if($GruppID) stats('st_grp_test', "SELECT DISTINCT c.Anvnamn FROM cstabell c, foretag f WHERE GruppID = $GruppID AND Tillfalle = $i");
+$statistik_cs_tot .= '<tr><td>antal test '.$i.' totalt: </td><td class="statsnum">'.$st_test.'</td></tr>';
+$statistik_cs_grp .= '<tr><td>antal test '.$i.' i vald grupp: </td><td class="statsnum">'.$st_grp_test.'</td></tr>';
+}
+
+$statistik_42 .= $statistik_cs_tot.'<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td>
+<td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>'.$statistik_cs_grp.'</table>';
+//////////////////////////////////////
+
+$nav = true;
+$norespondents = true;
+$altrows = true;
+$hidegrupper = true;
+
+if(($GruppID or $FORETAG) and $subaction == 'showcharts'){ 
+
+// javascript onload
+$onload .= '';
+
+// BUILD query
+if($GruppID) $queryinsert .= " AND c.GruppID = $GruppID";
+if($FORETAG) $queryinsert .= " AND c.GruppID = g.ID AND g.FORETAG = $FORETAG";
+//if($kon OR $alderstart OR $alderstopp) $queryinsert .= " AND c.Anvnamn = l.Anvnamn";
+if($kon AND $kon != 'Alla') $queryinsert .= " AND l.f2 = '$kon'";
+if($alderstart) $minalder = abs($alderstart-date("Y"));
+if($alderstopp) $maxalder = abs($alderstopp-date("Y"));
+if($minalder) $queryinsert .= " AND l.f3 <= $minalder";
+if($maxalder) $queryinsert .= " AND l.f3 >= $maxalder";
+//if($baraklara and $tillfallestopp) $queryinsert .= " AND c2.Anvnamn = l.Anvnamn AND c2.Tillfalle <= $tillfallestopp";
+if($baraklara and $tillfallestopp) $queryinsert .= " AND c2.Anvnamn = c.Anvnamn AND c2.Tillfalle = $tillfallestopp";
+//if($baraklara and $tillfallestopp) $queryinsert .= " AND c2.Anvnamn = c.Anvnamn AND c.Tillfalle <= $tillfallestopp AND c2.Tillfalle = $tillfallestopp ";
+if($baraklara) $tableinsert .= ", cstabell c2";
+//if($kon OR $alderstart OR $alderstopp OR $baraklara) $tableinsert .= ", livsstil l";
+if($FORETAG) $tableinsert .= ", grupptabell g";
+// AnvID overwrites the previous (now unneeded) inserts
+if($AnvID){ 
+$tableinsert = null;
+$queryinsert = " AND AnvID = $AnvID";
+}
+// put it together
+/*
+$amquery = "SELECT DISTINCT l.ID as lID, l.f2 as kon, l.f3 as ar, c.* FROM cstabell c, livsstil l".$tableinsert." WHERE c.Anvnamn = l.Anvnamn".$queryinsert." ORDER BY Tillfalle";
+*/
+
+// nurder query
+
+//$gruppresults = mysql_unbuffered_query("SELECT DISTINCT g.gruppnamn, c.Tillfalle, c.f12 FROM cstabell c, cstabell c2, grupptabell g WHERE c.f12 > 0 AND c.GruppID = g.id AND g.FORETAG = ".$FORETAG." AND c2.Anvnamn = c.Anvnamn AND c2.Tillfalle = ".$tillfallestopp." ORDER BY g.gruppnamn, c.Tillfalle");
+
+//$gruppresults = mysql_unbuffered_query("SELECT DISTINCT c.Tillfalle, c.f12, g.gruppnamn FROM cstabell c, cstabell c2, cstabell c3, grupptabell g WHERE c.f12 > 0 AND c.GruppID = g.id AND g.FORETAG = ".$FORETAG." AND c2.Anvnamn = c.Anvnamn AND c2.Tillfalle = ".$tillfallestopp." AND c3.Anvnamn = c.Anvnamn AND (c3.Tillfalle = ".$tillfallestart."+1 OR c3.Tillfalle = ".$tillfallestopp."-1) ORDER BY g.gruppnamn, c.Tillfalle");
+
+//$gruppresults = mysql_unbuffered_query("SELECT g.gruppnamn, c.Tillfalle, c.f12 FROM cstabell c, grupptabell g WHERE c.f12 > 0 AND c.GruppID = g.id AND g.FORETAG = ".$FORETAG." ORDER BY g.gruppnamn, c.Tillfalle");
+
+$gruppresults = mysql_unbuffered_query("SELECT g.gruppnamn, c.Tillfalle, c.f7, c.f8, c.f9, c.f10, c.f11, c.f12, c.f13, l.f2 as kon, l.f3 as ar FROM respondent r, livsstil l, cstabell c, cstabell c2, grupptabell g 
+WHERE c.f12 > 0 AND r.username = c.Anvnamn AND c.Anvnamn = c2.Anvnamn AND l.Anvnamn = r.username AND r.GruppID = g.id AND g.FORETAG = ".$FORETAG." 
+AND c2.Tillfalle = ".$tillfallestopp." 
+AND c.Tillfalle >= ".$tillfallestart." AND c.Tillfalle <= ".$tillfallestopp." 
+AND c2.Tillfalle >= ".$tillfallestart." AND c2.Tillfalle <= ".$tillfallestopp." 
+ORDER BY g.gruppnamn, c.Tillfalle");
+
+
+
+$pulsstats = array();
+
+while($grupprow=mysql_fetch_assoc($gruppresults)){
+$chart[$grupprow['gruppnamn']][$grupprow['Tillfalle']]['values'][] = $grupprow['f12'];
+$chart[$grupprow['gruppnamn']][$grupprow['Tillfalle']]['testvarde'][] = testvarde($grupprow['f11'],$grupprow['kon'],$grupprow['f12'],$grupprow['ar'],$grupprow['f13']);
+$chart[$grupprow['gruppnamn']][$grupprow['Tillfalle']]['fysvarde'][] = ( ( $grupprow['f7']+$grupprow['f8']+$grupprow['f9']+$grupprow['f10'] ) / 4 ) or $fysvalue = null;
+}
+
+// calculations loop
+foreach($chart as $key => $value){
+foreach($value as $key2 => $value2){
+$chart[$key][$key2]['sum'] = array_sum($chart[$key][$key2]['values']) or $chart[$key][$key2]['sum'] = null;
+$chart[$key][$key2]['divisor'] = countnotnull($chart[$key][$key2]['values']) or $chart[$key][$key2]['divisor'] = null;
+$chart[$key][$key2]['mean'] = round($chart[$key][$key2]['sum'] / $chart[$key][$key2]['divisor'],2) or $chart[$key][$key2]['mean'] = null;
+$chart[$key][$key2]['tvsum'] = array_sum($chart[$key][$key2]['testvarde']) or $chart[$key][$key2]['tvsum'] = null;
+$chart[$key][$key2]['tvdivisor'] = countnotnull($chart[$key][$key2]['testvarde']) or $chart[$key][$key2]['tvdivisor'] = null;
+$chart[$key][$key2]['tvmean'] = round($chart[$key][$key2]['tvsum'] / $chart[$key][$key2]['tvdivisor'],2) or $chart[$key][$key2]['tvmean'] = null;
+$chart[$key][$key2]['fyssum'] = array_sum($chart[$key][$key2]['fysvarde']) or $chart[$key][$key2]['fyssum'] = null;
+$chart[$key][$key2]['fysdivisor'] = countnotnull($chart[$key][$key2]['fysvarde']) or $chart[$key][$key2]['fysdivisor'] = null;
+$chart[$key][$key2]['fysmean'] = round($chart[$key][$key2]['fyssum'] / $chart[$key][$key2]['fysdivisor'],2) or $chart[$key][$key2]['fysmean'] = null;
+} // end calcloop 2
+} // end calcloop
+
+/*
+echo '<textarea style="width:100%;height:75%">';
+print_r($chart);
+echo '</textarea>';
+*/
+
+//$inline_42
+
+$tablehead .= '<br/><table id="table42" cellpadding="0" cellspacing="0" border="0">';
+$tabledatapart .= '<tr><th colspan="13">RESULTATDATA I GRUPPORDNING</th></tr>
+<tr><th>Grupp</th><th>Tillfälle</th><th colspan="3">Pulsförändring</th><th class="pad"></th><th colspan="3">Testvärdesförändring</th><th class="pad"></th><th colspan="3">Fysförändring</th></tr>';
+// html loop
+$ri = 0;
+foreach($chart as $key => $value){
+foreach($value as $key2 => $value2){
+if($key != $oldgroup){ 
+  if($firstvalue or $tvfirstvalue or $fysfirstvalue){
+	if($firstvalue){ 
+		if($oldvalue and $firstvalue) $fulldiff = round($oldvalue - $firstvalue,2);
+		$topplista['puls'][$oldgroup] = $fulldiff; // make topplista
+		if($fulldiff > 0) $tdstyle = 'style="color:red;font-weight:bold;"'; elseif($fulldiff < 0) $tdstyle = 'style="color:green;font-weight:bold;"';
+		$tabledatapart .= '<tr><td colspan="4" style="font-style:italic;font-size:0.875em;">Jämför första och sista tillfället:</td><td '.$tdstyle.'>'.$fulldiff.'</td><td class="pad"></td>';
+		$fulldiff = null;
+	}else{ // if !$firstvalue
+	$tabledatapart .= '<tr><td colspan="4" style="font-style:italic;font-size:0.875em;">Jämför första och sista tillfället:</td><td></td><td class="pad"></td>';
+	}
+	
+	if($tvfirstvalue){ 
+		if($tvoldvalue and $tvfirstvalue) $tvfulldiff = round($tvoldvalue - $tvfirstvalue,2);
+		if($tvfulldiff > 0) $tvtdstyle = 'style="color:green;font-weight:bold;"'; elseif($tvfulldiff < 0) $tvtdstyle = 'style="color:red;font-weight:bold;"';
+		$topplista['testvarde'][$oldgroup] = $tvfulldiff; // make topplista
+		$tabledatapart .= '<td></td><td></td><td '.$tvtdstyle.'>'.$tvfulldiff.'</td><td class="pad"></td>';
+	$tvfulldiff = null;
+	}else{ // if !$tvfirstvalue
+	$tabledatapart .= '<td></td><td></td><td></td><td class="pad"></td>';
+	}
+	
+	if($fysfirstvalue){ 
+		if($fysoldvalue and $fysfirstvalue) $fysfulldiff = round($fysoldvalue - $fysfirstvalue,2);
+		if($fysfulldiff > 0) $fystdstyle = 'style="color:green;font-weight:bold;"'; elseif($fysfulldiff < 0) $fystdstyle = 'style="color:red;font-weight:bold;"';
+		$topplista['fysvarde'][$oldgroup] = $fysfulldiff; // make topplista
+		$tabledatapart .= '<td></td><td></td><td '.$fystdstyle.'>'.$fysfulldiff.'</td></tr>';
+	$fysfulldiff = null;
+	}else{ // if !$fysfirstvalue
+	$tabledatapart .= '<td></td><td></td><td></td></tr>';
+	}
+  }
+	$firstvalue = $chart[$key][$key2]['mean'];
+	$tvfirstvalue = $chart[$key][$key2]['tvmean'];
+	$fysfirstvalue = $chart[$key][$key2]['fysmean'];
+	$tabledatapart .= '<tr><td colspan="13" class="border"></td></tr>';
+
+//if($ri > 0){ 
+$tabledatapart .= '<tr style="font-size:0.875em;font-style:italic;"><td colspan="2"><a name="'.$key.'"/></td><td>Antal</td><td>Puls</td><td>Diff</td><td class="pad"></td><td>Antal</td><td>Testvärde</td><td>Diff</td><td class="pad"></td><td>Antal</td><td>Fysvärde</td><td>Diff</td></tr>';
+//$ri = 0;
+//}
+//$ri++;
+}
+if($key == $oldgroup and $oldvalue and $chart[$key][$key2]['mean']) $diff = round($chart[$key][$key2]['mean'] - $oldvalue,2);
+if($key == $oldgroup and $tvoldvalue and $chart[$key][$key2]['tvmean']) $tvdiff = round($chart[$key][$key2]['tvmean'] - $tvoldvalue,2);
+if($key == $oldgroup and $fysoldvalue and $chart[$key][$key2]['fysmean']) $fysdiff = round($chart[$key][$key2]['fysmean'] - $fysoldvalue,2);
+if($diff > 0) $tdstyle = 'style="color:red;"'; elseif($diff < 0) $tdstyle = 'style="color:green;"';
+if($tvdiff > 0) $tvtdstyle = 'style="color:green;"'; elseif($tvdiff < 0) $tvtdstyle = 'style="color:red;"';
+if($fysdiff > 0) $fystdstyle = 'style="color:green;"'; elseif($fysdiff < 0) $fystdstyle = 'style="color:red;"';
+$tabledatapart .= '<tr><td>'.$key.'</td><td>'.$key2.'</td>
+<td>'.$chart[$key][$key2]['divisor'].'</td><td>'.$chart[$key][$key2]['mean'].'</td><td '.$tdstyle.'>'.$diff.'</td><td class="pad"></td>
+<td>'.$chart[$key][$key2]['tvdivisor'].'</td><td>'.$chart[$key][$key2]['tvmean'].'</td><td '.$tvtdstyle.'>'.$tvdiff.'</td><td class="pad"></td>
+<td>'.$chart[$key][$key2]['fysdivisor'].'</td><td>'.$chart[$key][$key2]['fysmean'].'</td><td '.$fystdstyle.'>'.$fysdiff.'</td></tr>';
+$oldvalue = $chart[$key][$key2]['mean'];
+$tvoldvalue = $chart[$key][$key2]['tvmean'];
+$fysoldvalue = $chart[$key][$key2]['fysmean'];
+$oldgroup = $key;
+$diff = null;
+$tvdiff = null;
+$fysdiff = null;
+}
+}
+
+// adding the last ending row out of the loop above
+if($firstvalue or $tvfirstvalue or $fysfirstvalue){
+	if($firstvalue){ 
+		$fulldiff = round($oldvalue - $firstvalue,2);
+		$topplista['puls'][$oldgroup] = $fulldiff; // make topplista
+		if($fulldiff > 0) $tdstyle = 'style="color:red;font-weight:bold;"'; elseif($fulldiff < 0) $tdstyle = 'style="color:green;font-weight:bold;"';
+		$tabledatapart .= '<tr><td colspan="4" style="font-style:italic;font-size:0.875em;">Jämför första och sista tillfället:</td><td '.$tdstyle.'>'.$fulldiff.'</td><td class="pad"></td>';
+	}else{ // if !$firstvalue
+	$tabledatapart .= '<tr><td colspan="4" style="font-style:italic;font-size:0.875em;">Jämför första och sista tillfället:</td><td></td><td class="pad"></td>';
+	}
+	
+	if($tvfirstvalue){ 
+		$tvfulldiff = round($tvoldvalue - $tvfirstvalue,2);
+		if($tvfulldiff > 0) $tvtdstyle = 'style="color:green;font-weight:bold;"'; elseif($tvfulldiff < 0) $tvtdstyle = 'style="color:red;font-weight:bold;"';
+		$topplista['testvarde'][$oldgroup] = $tvfulldiff; // make topplista
+		$tabledatapart .= '<td></td><td></td><td '.$tvtdstyle.'>'.$tvfulldiff.'</td><td class="pad"></td>';
+	$tvdiff = null;
+	}else{ // if !$tvfirstvalue
+	$tabledatapart .= '<td></td><td></td><td></td><td class="pad"></td>';
+	}
+	
+	if($fysfirstvalue){ 
+		$fysfulldiff = round($fysoldvalue - $fysfirstvalue,2);
+		if($fysfulldiff > 0) $fystdstyle = 'style="color:green;font-weight:bold;"'; elseif($fysfulldiff < 0) $fystdstyle = 'style="color:red;font-weight:bold;"';
+		$topplista['fysvarde'][$oldgroup] = $fysfulldiff; // make topplista
+		$tabledatapart .= '<td></td><td></td><td '.$fystdstyle.'>'.$fysfulldiff.'</td></tr>';
+	$fysfulldiff = null;
+	}else{ // if !$fysfirstvalue
+	$tabledatapart .= '<td></td><td></td><td></td></tr>';
+	}	
+	
+  }
+// end adding the last ending row
+
+$tablefoot .= '</table><br/><br/>';
+
+array_multisort($topplista['testvarde'],SORT_NUMERIC, SORT_DESC);
+array_multisort($topplista['puls'],SORT_NUMERIC, SORT_ASC);
+array_multisort($topplista['fysvarde'],SORT_NUMERIC, SORT_DESC);
+$trank = 1;
+foreach($topplista['testvarde'] as $tgrp => $tval){
+$tvtopplista .= '<tr><td>'.$trank.'</td><td><a href="#'.$tgrp.'">'.$tgrp.'</a></td><td>'.$tval.'</td></tr>';
+$trank++;
+}
+$prank = 1;
+foreach($topplista['puls'] as $pgrp => $pval){
+$pulstopplista .= '<tr><td>'.$prank.'</td><td><a href="#'.$pgrp.'">'.$pgrp.'</a></td><td>'.$pval.'</td></tr>';
+$prank++;
+}
+$frank = 1;
+foreach($topplista['fysvarde'] as $fgrp => $fval){
+$fystopplista .= '<tr><td>'.$frank.'</td><td><a href="#'.$fgrp.'">'.$fgrp.'</a></td><td>'.$fval.'</td></tr>';
+$frank++;
+}
+
+$tvtopplista = '<table class="topplista"><tr><th>Pl</th><th>Grupp</th><th>Tvdiff</th></tr>'.$tvtopplista.'</table>';
+$pulstopplista = '<table class="topplista"><tr><th>Pl</th><th>Grupp</th><th>Pulsdiff</th></tr>'.$pulstopplista.'</table>';
+$fystopplista = '<table class="topplista"><tr><th>Pl</th><th>Grupp</th><th>Fysdiff</th></tr>'.$fystopplista.'</table>';
+$topplistor = '<tr><th colspan="3">PULSTOPPLISTA</th><th colspan="5">TESTVÄRDETOPPLISTA</th><th colspan="5">FYSTOPPLISTA</th></tr>
+<tr><td colspan="3" valign="top">'.$pulstopplista.'<br/><td colspan="5" valign="top">'.$tvtopplista.'<br/></td><td colspan="5" valign="top">'.$fystopplista.'<br/></td></tr>
+<tr><td colspan="13" class="border" style="background:#000;"></td></tr>';
+
+$inline_42 .= $tablehead.$topplistor.$tabledatapart.$tablefoot;
+
+//echo '<textarea style="width:100%;height:75%">';
+//sort($topplista['puls'],SORT_NUMERIC);
+//array_multisort($topplista['puls']);
+//array_multisort($topplista['testvarde'],SORT_NUMERIC, SORT_DESC);
+//print_r($topplista['puls']);
+//print_r($topplista['testvarde']);
+//$sortedpuls = array();
+//array_multisort($topplistav,$topplistag);
+//var_dump($topplistag);
+//var_dump($topplistav);
+//$sortedpuls = array();
+//$sortedpuls = sort($topplista);
+//print_r($sortedpuls);
+//echo $topplista['puls']['Ericsson DU/FTP/HX1'];
+//$revtopplista = array_reverse($topplista['puls']);
+//print_r($revtopplista);
+//print_r($topplista);
+//echo '</textarea>';
+
+}
+
+}elseif($_SESSION['anv']){
+// put the thing here too
+$inline_42 .= '<br/><br/>';
+}
+?>

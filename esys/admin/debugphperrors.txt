@@ -1,0 +1,313 @@
+[16-Oct-2023 00:05:06 Europe/Berlin] PHP Warning:  mysql_connect(): No such file or directory in /var/www/html/niana_esys/admin/inc/db.inc.php on line 6
+[16-Oct-2023 00:05:06 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:05:06 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/anvlogin.php:0
+[16-Oct-2023 00:05:06 Europe/Berlin] PHP   2. include() /var/www/html/niana_esys/admin/anvlogin.php:41
+[16-Oct-2023 00:05:06 Europe/Berlin] PHP   3. mysql_connect() /var/www/html/niana_esys/admin/inc/db.inc.php:6
+[16-Oct-2023 00:08:16 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/anvlogin.php on line 46
+[16-Oct-2023 00:08:16 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:16 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/anvlogin.php:0
+[16-Oct-2023 00:08:16 Europe/Berlin] PHP   2. extract() /var/www/html/niana_esys/admin/anvlogin.php:46
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: action in /var/www/html/niana_esys/admin/inc/init.inc on line 19
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   2. include() /var/www/html/niana_esys/admin/index.php:7
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: niana in /var/www/html/niana_esys/admin/inc/init.inc on line 44
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   2. include() /var/www/html/niana_esys/admin/index.php:7
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: niananv in /var/www/html/niana_esys/admin/inc/init.inc on line 48
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   2. include() /var/www/html/niana_esys/admin/index.php:7
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: nianachef in /var/www/html/niana_esys/admin/inc/init.inc on line 59
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   2. include() /var/www/html/niana_esys/admin/index.php:7
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: cat_id in /var/www/html/niana_esys/admin/index.php on line 14
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: cat_id in /var/www/html/niana_esys/admin/index.php on line 15
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: art_id in /var/www/html/niana_esys/admin/index.php on line 16
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: page in /var/www/html/niana_esys/admin/index.php on line 17
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: action in /var/www/html/niana_esys/admin/index.php on line 18
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: action in /var/www/html/niana_esys/admin/index.php on line 19
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: subaction in /var/www/html/niana_esys/admin/index.php on line 20
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: subaction in /var/www/html/niana_esys/admin/index.php on line 21
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: key in /var/www/html/niana_esys/admin/index.php on line 22
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: key in /var/www/html/niana_esys/admin/index.php on line 23
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: FORETAG in /var/www/html/niana_esys/admin/index.php on line 25
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: FORETAG in /var/www/html/niana_esys/admin/index.php on line 26
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: ForetagID in /var/www/html/niana_esys/admin/index.php on line 27
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: ForetagID in /var/www/html/niana_esys/admin/index.php on line 28
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: GruppID in /var/www/html/niana_esys/admin/index.php on line 29
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: GruppID in /var/www/html/niana_esys/admin/index.php on line 30
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: RollID in /var/www/html/niana_esys/admin/index.php on line 31
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: RollID in /var/www/html/niana_esys/admin/index.php on line 32
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: AnvID in /var/www/html/niana_esys/admin/index.php on line 33
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: AnvID in /var/www/html/niana_esys/admin/index.php on line 34
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: CSID in /var/www/html/niana_esys/admin/index.php on line 35
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: CSID in /var/www/html/niana_esys/admin/index.php on line 36
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: coacher_CoachID in /var/www/html/niana_esys/admin/index.php on line 37
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: coacher_CoachID in /var/www/html/niana_esys/admin/index.php on line 38
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: anv_AnvID in /var/www/html/niana_esys/admin/index.php on line 39
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: anv_AnvID in /var/www/html/niana_esys/admin/index.php on line 40
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: chefer_ChefID in /var/www/html/niana_esys/admin/index.php on line 41
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: chefer_ChefID in /var/www/html/niana_esys/admin/index.php on line 42
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: grupper_GruppID in /var/www/html/niana_esys/admin/index.php on line 43
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: grupper_GruppID in /var/www/html/niana_esys/admin/index.php on line 44
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: roller_RollID in /var/www/html/niana_esys/admin/index.php on line 45
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: roller_RollID in /var/www/html/niana_esys/admin/index.php on line 46
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: kon in /var/www/html/niana_esys/admin/index.php on line 47
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: alderstart in /var/www/html/niana_esys/admin/index.php on line 48
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: alderstopp in /var/www/html/niana_esys/admin/index.php on line 49
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: tillfallestart in /var/www/html/niana_esys/admin/index.php on line 50
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: tillfallestopp in /var/www/html/niana_esys/admin/index.php on line 51
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: baraklara in /var/www/html/niana_esys/admin/index.php on line 52
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: baraklara in /var/www/html/niana_esys/admin/index.php on line 53
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined variable: tillfallestart in /var/www/html/niana_esys/admin/index.php on line 54
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined variable: tillfallestopp in /var/www/html/niana_esys/admin/index.php on line 55
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Notice:  Undefined index: forutskrift in /var/www/html/niana_esys/admin/index.php on line 56
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:08:35 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:09:56 Europe/Berlin] PHP Warning:  mysql_connect(): No such file or directory in /var/www/html/niana_esys/admin/login.php on line 11
+[16-Oct-2023 00:09:56 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:09:56 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/login.php:0
+[16-Oct-2023 00:09:56 Europe/Berlin] PHP   2. mysql_connect() /var/www/html/niana_esys/admin/login.php:11
+[16-Oct-2023 00:10:18 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/login.php on line 25
+[16-Oct-2023 00:10:18 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:10:18 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/login.php:0
+[16-Oct-2023 00:10:18 Europe/Berlin] PHP   2. extract() /var/www/html/niana_esys/admin/login.php:25
+[16-Oct-2023 00:10:20 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/login.php on line 25
+[16-Oct-2023 00:10:20 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:10:20 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/login.php:0
+[16-Oct-2023 00:10:20 Europe/Berlin] PHP   2. extract() /var/www/html/niana_esys/admin/login.php:25
+[16-Oct-2023 00:10:39 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/login.php on line 25
+[16-Oct-2023 00:10:39 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:10:39 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/login.php:0
+[16-Oct-2023 00:10:39 Europe/Berlin] PHP   2. extract() /var/www/html/niana_esys/admin/login.php:25
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:11 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  extract() expects parameter 1 to be array, boolean given in /var/www/html/niana_esys/admin/inc/show.inc on line 111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   2. show() /var/www/html/niana_esys/admin/index.php:75
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   3. extract() /var/www/html/niana_esys/admin/inc/show.inc:111
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  include(categories/.cat): failed to open stream: No such file or directory in /var/www/html/niana_esys/admin/index.php on line 84
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Warning:  include(): Failed opening 'categories/.cat' for inclusion (include_path='.:/usr/share/php') in /var/www/html/niana_esys/admin/index.php on line 84
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP Stack trace:
+[16-Oct-2023 00:11:12 Europe/Berlin] PHP   1. {main}() /var/www/html/niana_esys/admin/index.php:0

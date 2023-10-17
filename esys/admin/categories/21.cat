@@ -1,0 +1,31 @@
+﻿<?php
+$nav = null;
+
+if($_POST['valid'] AND $_POST['name'] AND $_POST['text']){
+
+$name = stripslashes($_POST['name']);
+$email = stripslashes($_POST['email']);
+$subject = stripslashes($_POST['subject']);
+$text = stripslashes($_POST['text']);
+mail("niana@whatform.se",$subject,$text,"From: $name <$email>");
+header("location:index.php?action=success&success=Tack! Återkommer snarast möjligt");
+
+}elseif($_POST['valid'] AND (!$_POST['name'] OR !$_POST['text'])){
+$success = '<br/>Du glömde ditt namn och/eller att skriva någonting.<br/><br/>';
+}else{
+
+$inline_21 = '
+<form action="?action=success&cat_id=21" method="post">
+<input type=hidden name="subject" value="Hjälpformulär från Antingen esys"/>
+<input type=hidden name="valid" value="1"/>
+<div id="formname"><label for="name">namn:</label><br/><input type="text" class="inputname" name="name" size="30"/></div>
+<div id="formemail"><label for="email">email:</label><br/><input type="text" class="inputemail" name="email" size="30"/></div>
+<br />
+meddelande:<br /><textarea name="text" cols="32" rows="10" wrap="virtual"></textarea>
+<br />
+<input type="submit" class="inputsubmit" name="submit" value="Skicka supportfråga"/>
+</form>
+';
+
+}
+?>

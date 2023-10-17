@@ -1,0 +1,85 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+/*
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n WHERE g.ID = n.GruppID ORDER BY gruppnamn"; 
+elseif($_SESSION['ulvl'] == 4 AND $_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n, chefXforetagTabell cxf WHERE g.ID = n.GruppID AND g.FORETAG = cxf.ForetagID AND cxf.ChefID = ".$_SESSION['chef']." ORDER BY gruppnamn";
+elseif($_SESSION['coach']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n, coachXgruppTabell cxg WHERE g.ID = n.GruppID AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+elseif($_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n, chefXgruppTabell cxg WHERE g.ID = n.GruppID AND g.ID = cxg.GruppID AND cxg.ChefID = ".$_SESSION['chef']." ORDER BY gruppnamn";
+show('grupper', 'esys', 1, $grupper_query, $GruppID, 2);
+*/
+
+// Show grupper
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n WHERE g.ID = n.GruppID ORDER BY gruppnamn"; 
+elseif($_SESSION['ulvl'] == 4 AND $_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n, chefXforetagTabell cxf WHERE g.ID = n.GruppID AND g.FORETAG = cxf.ForetagID AND cxf.ChefID = ".$_SESSION['chef']." AND g.ID != 14 AND g.ID != 35 ORDER BY gruppnamn";
+elseif($_SESSION['coach']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n, coachXgruppTabell cxg WHERE g.ID = n.GruppID AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+elseif($_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, nyutvtabell n, chefXgruppTabell cxg WHERE g.ID = n.GruppID AND g.ID = cxg.GruppID AND cxg.ChefID = ".$_SESSION['chef']." ORDER BY gruppnamn";
+show('grupper', 'esys', 40, $grupper_query, $GruppID, 41, null, null, 1, null, 'NULL', '', null, null, null, null, null, true);
+
+// Show individer
+if($GruppID){
+$respondent_query = "SELECT r.* FROM respondent r, nyutvtabell n WHERE r.ID = n.AnvID AND r.GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show tillfallen inline
+if($AnvID){
+$inline_29_query = "SELECT * FROM nyutvtabell WHERE AnvID = $AnvID AND GruppID = $GruppID";
+show('inline_29', 'esys', 19, $inline_29_query, null, 1, null, $cat_id);
+}
+// Show tillfalle
+//if($CSID){
+//$anvandare_15_query = "SELECT * FROM cstabell WHERE AnvID = $AnvID AND GruppID = $GruppID AND ID = $CSID";
+//show('anvandare_15', 'esys', 7, $anvandare_15_query);
+//}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+// Antal test totalt i utv
+stats('st_test1', "SELECT DISTINCT Anvnamn FROM nyutvtabell WHERE GruppID > 0 AND GruppID != 14");
+// Antal test i gruppen i utv
+if($GruppID){
+stats('st_grp_test1', "SELECT DISTINCT Anvnamn FROM nyutvtabell WHERE GruppID = $GruppID");
+}
+
+$statistik_29 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal utv totalt: </td><td class="statsnum">'.$st_test1.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td><td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal utv i vald grupp: </td><td class="statsnum">'.$st_grp_test1.'</td></tr>
+</table>';
+//////////////////////////////////////
+
+$nav = true;
+$altrows = true;
+if($_SESSION['ulvl'] < 7) $norespondents = true;
+
+if($GruppID){
+$inline_29 .= '<br/><br/>Kommentarer:<br/>';
+$results = mysql_query("SELECT f12 FROM nyutvtabell WHERE GruppID = $GruppID") or die(mysql_error());
+while($rows = mysql_fetch_array($results)){
+extract($rows);
+if($f12) $inline_29 .= '<br/>"'.$f12.'"<br/>';
+}
+}
+?>

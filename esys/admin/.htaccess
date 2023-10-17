@@ -1,0 +1,4 @@
+php_flag register_globals off
+php_value session.cache_expire 480
+php_value session.gc_maxlifetime 32400
+php_value session_save_path /tmp/sessions/

@@ -1,0 +1,67 @@
+﻿<?php
+
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+//if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT * FROM grupptabell ORDER BY gruppnamn"; else $grupper_query = "SELECT g.* FROM grupptabell g, coachXgruppTabell cxg WHERE g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, respondent r, uppfolj u WHERE r.username = u.Anvnamn AND r.GruppID = g.id ORDER BY g.gruppnamn"; else $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, respondent r, uppfolj u, coachXgruppTabell cxg WHERE r.username = u.Anvnamn AND r.GruppID = g.id AND g.id = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY g.gruppnamn";
+
+//show('grupper', 'esys', 1, $grupper_query, $GruppID, 2);
+show('grupper', 'esys', 38, $grupper_query, $GruppID, 39, null, null, 1, null, 'NULL', '', null, null, null, null, true);
+// Show individer
+if($GruppID){
+$respondent_query = "SELECT r.ID, u.f1 FROM respondent r, uppfolj u WHERE r.username = u.Anvnamn AND r.GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show tillfallen inline
+if($AnvID){
+$inline_33_prepare = "SELECT username FROM respondent WHERE ID = $AnvID";
+$results = mysql_query($inline_33_prepare) or die(mysql_error());
+$rows=mysql_fetch_array($results);
+extract($rows);
+$inline_33_query = "SELECT * FROM uppfolj WHERE Anvnamn = '".$username."'";
+// echo $inline_33_query; die();
+show('inline_33', 'esys', 22, $inline_33_query, null, 1, null, $cat_id);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+// Antal test totalt i uppfolj
+stats('st_test1', "SELECT DISTINCT u.Anvnamn FROM uppfolj u, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.username = u.Anvnamn");
+// Antal test i gruppen i uppfolj
+if($GruppID){
+stats('st_grp_test1', "SELECT DISTINCT u.Anvnamn FROM uppfolj u, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.GruppID = $GruppID AND r.username = u.Anvnamn");
+}
+
+$statistik_33 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal uppföljningar totalt: </td><td class="statsnum">'.$st_test1.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td><td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal uppfölningar i vald grupp: </td><td class="statsnum">'.$st_grp_test1.'</td></tr>
+</table>';
+//////////////////////////////////////
+
+$nav = true;
+$altrows = true;
+?>

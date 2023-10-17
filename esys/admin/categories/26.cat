@@ -1,0 +1,62 @@
+﻿<?php
+
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show grupper
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, chefsutvtabell c WHERE g.ID = c.GruppID ORDER BY gruppnamn"; 
+elseif($_SESSION['chef'] and $_SESSION['ulvl'] == 4) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, chefsutvtabell c WHERE g.ID = c.GruppID ORDER BY gruppnamn"; 
+elseif($_SESSION['coach']) $grupper_query = "SELECT DISTINCT g.* FROM grupptabell g, chefsutvtabell c, coachXgruppTabell cxg WHERE g.ID = c.GruppID AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ORDER BY gruppnamn";
+
+show('grupper', 'esys', 1, $grupper_query, $GruppID, 2);
+// Show individer
+if($GruppID){
+$respondent_query = "SELECT r.* FROM respondent r, chefsutvtabell c WHERE r.ID = c.AnvID AND r.GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show tillfallen inline
+if($AnvID){
+$inline_26_query = "SELECT * FROM chefsutvtabell WHERE AnvID = $AnvID";
+show('inline_26', 'esys', 15, $inline_26_query, null, 1, null, $cat_id, 1, null, 'NULL', '', 1);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+// Antal test totalt i chefsutv
+stats('st_test1', "SELECT DISTINCT Anvnamn FROM chefsutvtabell WHERE GruppID > 0 AND GruppID != 14");
+// Antal test i gruppen i utv
+if($GruppID){
+stats('st_grp_test1', "SELECT DISTINCT Anvnamn FROM chefsutvtabell WHERE GruppID = $GruppID");
+}
+
+$statistik_26 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal chefsutv totalt: </td><td class="statsnum">'.$st_test1.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td><td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal chefsutv i vald grupp: </td><td class="statsnum">'.$st_grp_test1.'</td></tr>
+</table>';
+//////////////////////////////////////
+
+$nav = true;
+$norespondents = true;
+$altrows = true;
+if($GruppID) $inline_26 .= '<br/><img src="graphs/chefsutv.php?GruppID='.$GruppID.'"/>';
+?>

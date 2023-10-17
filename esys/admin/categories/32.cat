@@ -1,0 +1,88 @@
+﻿<?php
+//////////////////////////////////////
+// CUSTOM RENDER
+///////////////////
+// Coach stats
+
+$inline_32 = '<br/><br/>
+<table id="table32">
+<tr><th>Coachnamn</th><th>Gruppnamn</th><th>Individer</th><th>Livsstilar</th><th>CS1</th><th>CS2</th><th>CS3</th><th>UTV</th><th>CS4</th><th>CS5</th><th>CS6</th><th>CS7</th></tr>';
+	
+// loop 1
+//$query = "SELECT c.id, c.coachnamn, g.id, g.gruppnamn FROM coachtabell c, grupptabell g, coachXgruppTabell cxg WHERE c.id = cxg.CoachID AND g.id = cxg.GruppID";
+$query = "SELECT c.id AS CID, c.coachnamn, g.id AS GID, g.gruppnamn FROM coachtabell c, grupptabell g, coachXgruppTabell cxg WHERE c.id = cxg.CoachID AND g.id = cxg.GruppID ORDER BY c.coachnamn, g.gruppnamn";
+$results = mysql_query($query) or die(mysql_error());
+while ($rows=mysql_fetch_array($results)) { 
+extract($rows);	
+if($GID != 14 AND $CID != 36){
+$i++;
+if($CID == $old_CID){
+$coachnamn = '';
+$coco++;
+}
+if($old_CID AND $coco > 0 AND $CID != $old_CID){
+$c_all_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM respondent r, coachXgruppTabell cxg WHERE r.GruppID != 14 AND r.GruppID = cxg.GruppID AND cxg.CoachID =".$old_CID));
+$c_all_ls = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM respondent r, coachXgruppTabell cxg, livsstil l WHERE r.GruppID != 14 AND r.GruppID = cxg.GruppID AND l.Anvnamn = r.username AND cxg.CoachID =".$old_CID));
+$c_all_cs1 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 1 AND cxg.CoachID =".$old_CID));
+$c_all_cs2 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 2 AND cxg.CoachID =".$old_CID));
+$c_all_cs3 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 3 AND cxg.CoachID =".$old_CID));
+$c_all_cs4 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 4 AND cxg.CoachID =".$old_CID));
+$c_all_cs5 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 5 AND cxg.CoachID =".$old_CID));
+$c_all_cs6 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 6 AND cxg.CoachID =".$old_CID));
+$c_all_cs7 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 7 AND cxg.CoachID =".$old_CID));
+$c_all_utv = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, nyutvtabell u WHERE u.GruppID != 14 AND u.GruppID = cxg.GruppID AND u.Tillfalle = 1 AND cxg.CoachID =".$old_CID));
+
+$inline_32 .= '<tr style="font-style:italic;"><td>&nbsp;</td><td>alla:</td><td>'.$c_all_resp[0].'</td><td>'.$c_all_ls[0].'</td><td>'.$c_all_cs1[0].'</td><td>'.$c_all_cs2[0].'</td><td>'.$c_all_cs3[0].'</td><td>'.$c_all_utv[0].'</td><td>'.$c_all_cs4[0].'</td><td>'.$c_all_cs5[0].'</td><td>'.$c_all_cs6[0].'</td><td>'.$c_all_cs7[0].'</td></tr>';
+
+if($i > 14){
+$inline_32 .= '<tr style="font-weight:bold;"><td>Coachnamn</td><td>Gruppnamn</td><td>Individer</td><td>Livsstilar</td><td>CS1</td><td>CS2</td><td>CS3</td><td>UTV</td><td>CS4</td><td>CS5</td><td>CS6</td><td>CS7</td></tr>';
+$i = 0;
+}
+$coco = 0;
+}
+$old_CID = $CID;
+
+// count resp in each group
+$g_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM respondent WHERE GruppID = ".$GID));
+$l_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM respondent r, livsstil l WHERE r.username = l.Anvnamn AND r.GruppID = ".$GID));
+//$uppf_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM respondent r, uppfolj u WHERE r.username = u.Anvnamn AND r.GruppID = ".$GID));
+$cs1_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM cstabell WHERE Tillfalle = 1 AND GruppID = ".$GID));
+$cs2_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM cstabell WHERE Tillfalle = 2 AND GruppID = ".$GID));
+$cs3_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM cstabell WHERE Tillfalle = 3 AND GruppID = ".$GID));
+$cs4_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM cstabell WHERE Tillfalle = 4 AND GruppID = ".$GID));
+$cs5_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM cstabell WHERE Tillfalle = 5 AND GruppID = ".$GID));
+$cs6_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM cstabell WHERE Tillfalle = 6 AND GruppID = ".$GID));
+$cs7_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM cstabell WHERE Tillfalle = 7 AND GruppID = ".$GID));
+$utv_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM nyutvtabell WHERE Tillfalle = 1 AND GruppID = ".$GID));
+
+
+
+$inline_32 .= '<tr><td>'.$coachnamn.'</td><td>'.$gruppnamn.'</td><td>'.$g_resp[0].'</td><td>'.$l_resp[0].'</td><td>'.$cs1_resp[0].'</td><td>'.$cs2_resp[0].'</td><td>'.$cs3_resp[0].'</td><td>'.$utv_resp[0].'</td><td>'.$cs4_resp[0].'</td><td>'.$cs5_resp[0].'</td><td>'.$cs6_resp[0].'</td><td>'.$cs7_resp[0].'</td></tr>';
+}
+}
+
+$c_all_resp = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM respondent r, coachXgruppTabell cxg WHERE r.GruppID != 14 AND r.GruppID = cxg.GruppID AND cxg.CoachID =".$old_CID));
+$c_all_ls = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM respondent r, coachXgruppTabell cxg, livsstil l WHERE r.GruppID != 14 AND r.GruppID = cxg.GruppID AND l.Anvnamn = r.username AND cxg.CoachID =".$old_CID));
+$c_all_cs1 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 1 AND cxg.CoachID =".$old_CID));
+$c_all_cs2 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 2 AND cxg.CoachID =".$old_CID));
+$c_all_cs3 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 3 AND cxg.CoachID =".$old_CID));
+$c_all_cs4 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 4 AND cxg.CoachID =".$old_CID));
+$c_all_cs5 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 5 AND cxg.CoachID =".$old_CID));
+$c_all_cs6 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 6 AND cxg.CoachID =".$old_CID));
+$c_all_cs7 = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, cstabell c WHERE c.GruppID != 14 AND c.GruppID = cxg.GruppID AND c.Tillfalle = 7 AND cxg.CoachID =".$old_CID));
+$c_all_utv = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM coachXgruppTabell cxg, nyutvtabell u WHERE u.GruppID != 14 AND u.GruppID = cxg.GruppID AND u.Tillfalle = 1 AND cxg.CoachID =".$old_CID));
+
+$inline_32 .= '<tr style="font-style:italic;"><td>&nbsp;</td><td>alla:</td><td>'.$c_all_resp[0].'</td><td>'.$c_all_ls[0].'</td><td>'.$c_all_cs1[0].'</td><td>'.$c_all_cs2[0].'</td><td>'.$c_all_cs3[0].'</td><td>'.$c_all_utv[0].'</td><td>'.$c_all_cs4[0].'</td><td>'.$c_all_cs5[0].'</td><td>'.$c_all_cs6[0].'</td><td>'.$c_all_cs7[0].'</td></tr>';
+
+
+$inline_32 .= '</table><br/><br/>';
+
+//////////////////////////////////////
+
+$nav = null;
+$altrows = true;
+
+
+
+
+?>

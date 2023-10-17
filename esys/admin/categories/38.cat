@@ -1,0 +1,211 @@
+﻿<?php
+//////////////////////////////////////
+// GENERATE 
+///////////////////
+if($GruppID AND !$FORETAG) extract(mysql_fetch_array(mysql_query("SELECT FORETAG FROM grupptabell WHERE id = $GruppID")));
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show foretag
+$foretag_query = "SELECT ID as ForetagID, ID, Foretagsnamn FROM foretag ORDER BY Foretagsnamn";
+show('selectforetag', 'esys', 35, $foretag_query, $FORETAG, 36);
+
+if($FORETAG){
+$grupper_query = "SELECT gruppnamn, id AS GruppID, id, FORETAG FROM grupptabell WHERE FORETAG = $FORETAG ORDER BY gruppnamn";
+show('grupper', 'esys', 33, $grupper_query, $GruppID, 34, null, null, 1, null, 'NULL', '', null, null, null, true);
+$grupper = '<option value="99999">Visa alla inom valt företag </option>'.$grupper;
+}
+
+// Show individer inline - 99999 = list all in the selected Foretag
+if($GruppID == 99999){
+
+// prepare csv export
+$_SESSION['csv']['table_column_names'] = "f1,f4,f5";
+$_SESSION['csv']['csv_column_names'] = "förnamn,efternamn,epost,telefon jobb";
+$_SESSION['csv']['query'] = "SELECT l.f1, l.f4, l.f5 FROM respondent r, livsstil l, grupptabell g WHERE r.username = l.Anvnamn AND r.GruppID = g.id AND g.FORETAG = $FORETAG ORDER BY r.username"; // coachtabell c (...) AND l.f43 = c.id 
+$filename = "F".$FORETAG."_alla";
+$_SESSION['csv']['filename'] = $filename."_".date("Y-m-d_H-i");
+$_SESSION['csv']['split_name'] = "f1";
+$csv_export_link = '<a class="greybut" href="?'.$_SERVER['QUERY_STRING'].'&action=csvexport" title="exportera denna lista till excel (csv-format)">export till excel</a>';
+// end prepare csv export
+
+$qstr = 'cat_id='.$cat_id.'&FORETAG='.$FORETAG.'&GruppID='.$GruppID;
+
+$prepend_38_query = "SELECT r.ID, r.GruppID, l.ID AS LvID, l.f1, l.f4, l.f5, c.coachnamn, c.id AS coachID FROM respondent r, livsstil l, coachtabell c, grupptabell g WHERE r.username = l.Anvnamn AND r.GruppID = g.id AND g.FORETAG = $FORETAG AND l.f43 = c.id AND l.Status IS NULL ORDER BY c.coachnamn, l.Status, r.username";
+show('prepend_38', 'esys', 31, $prepend_38_query, null, 1, null,$qstr);
+
+$inline_38_query = "SELECT r.ID, r.GruppID, l.ID AS LvID, l.f1, l.f4, l.f5, c.coachnamn, c.id AS coachID FROM respondent r, livsstil l, coachtabell c, grupptabell g  WHERE r.username = l.Anvnamn AND r.GruppID = g.id AND g.FORETAG = $FORETAG AND l.f43 = c.id AND l.Status IS NOT NULL ORDER BY c.coachnamn, l.Status, r.username";
+show('inline_38', 'esys', 32, $inline_38_query, null, 1, null, $qstr);
+
+$append_38_query = "SELECT r.ID, r.GruppID, l.ID AS LvID, l.f1, l.f4, l.f5 FROM respondent r, livsstil l, grupptabell g WHERE r.username = l.Anvnamn AND r.GruppID = g.id AND g.FORETAG = $FORETAG AND l.f43 IS NULL ORDER BY r.username";
+show('append_38', 'esys', 37, $append_38_query, null, 1, null, $qstr);
+
+// prepend and append to result
+$inline_38 = '<br/><strong>Lista på deltagare i vald grupp:</strong><br/><em><ul><li>Klicka på namnet för att se dennes livsstilsprofil.</li><li>Klicka på mailadressen för att skapa ett tomt mail till deltagaren i ditt mailprogram.</li><li>Klicka på "redigera" för att byta coach för deltagaren.</li></ul></em><br/>
+<table id="table38">
+	<tr>
+		<th>Coach</th><!--<th>Status</th>-->
+		<th>Redigera</th>
+		<th>Namn</th>
+		<th>Email</th>
+		<th>Telefon</th>
+	</tr>'
+	.$append_38.$prepend_38.$inline_38.
+	'</table>';
+
+}elseif($GruppID){ // Show individer inline = list all in the selected Grupp
+
+// prepare csv export
+$_SESSION['csv']['table_column_names'] = "f1,f4,f5";
+$_SESSION['csv']['csv_column_names'] = "förnamn,efternamn,epost,telefon jobb";
+$_SESSION['csv']['query'] = "SELECT l.f1, l.f4, l.f5 FROM respondent r, livsstil l WHERE r.username = l.Anvnamn AND r.GruppID = $GruppID ORDER BY r.username"; // coachtabell c (...) AND l.f43 = c.id
+$filename = "F".$FORETAG."_G".$GruppID;
+$_SESSION['csv']['filename'] = $filename."_".date("Y-m-d_H-i");
+$_SESSION['csv']['split_name'] = "f1";
+$csv_export_link = '<a class="greybut" href="?'.$_SERVER['QUERY_STRING'].'&action=csvexport" title="exportera denna lista till excel (csv-format)">export till excel</a>';
+// end prepare csv export
+
+$qstr = 'cat_id='.$cat_id.'&FORETAG='.$FORETAG.'&GruppID='.$GruppID;
+
+$prepend_38_query = "SELECT r.ID, r.GruppID, l.ID AS LvID, l.f1, l.f4, l.f5, c.coachnamn, c.id AS coachID FROM respondent r, livsstil l, coachtabell c WHERE r.username = l.Anvnamn AND r.GruppID = $GruppID AND l.f43 = c.id AND l.Status IS NULL ORDER BY c.coachnamn, l.Status, r.username";
+show('prepend_38', 'esys', 31, $prepend_38_query, null, 1, null,$qstr);
+
+$inline_38_query = "SELECT r.ID, r.GruppID, l.ID AS LvID, l.f1, l.f4, l.f5, c.coachnamn, c.id AS coachID FROM respondent r, livsstil l, coachtabell c  WHERE r.username = l.Anvnamn AND r.GruppID = $GruppID AND l.f43 = c.id AND l.Status IS NOT NULL ORDER BY c.coachnamn, l.Status, r.username";
+show('inline_38', 'esys', 32, $inline_38_query, null, 1, null, $qstr);
+
+$append_38_query = "SELECT r.ID, r.GruppID, l.ID AS LvID, l.f1, l.f4, l.f5 FROM respondent r, livsstil l WHERE r.username = l.Anvnamn AND r.GruppID = $GruppID AND l.f43 IS NULL ORDER BY r.username";
+show('append_38', 'esys', 37, $append_38_query, null, 1, null, $qstr);
+
+// prepend and append to result
+$inline_38 = '<br/><strong>Lista på deltagare i vald grupp:</strong><br/><em><ul><li>Klicka på namnet för att se dennes livsstilsprofil.</li><li>Klicka på mailadressen för att skapa ett tomt mail till deltagaren i ditt mailprogram.</li><li>Klicka på "redigera" för att byta coach för deltagaren.</li></ul></em><br/>
+<table id="table38">
+	<tr>
+		<th>Coach</th><!--<th>Status</th>-->
+		<th>Redigera</th>
+		<th>Namn</th>
+		<th>Email</th>
+		<th>Telefon</th>
+	</tr>'
+	.$append_38.$prepend_38.$inline_38.
+	'</table><br/>';
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// BYT COACH
+///////////////////
+// 
+if($action == "CAbytcoach"){
+
+// Ainfo
+extract(mysql_fetch_array(mysql_query("SELECT l.f1, l.ID AS livsstilID FROM respondent r, livsstil l WHERE r.username = l.Anvnamn AND r.ID = $AnvID")));
+
+// Cselect
+$Cquery = "SELECT * FROM coachtabell ORDER BY coachnamn";
+$Cquery = sprintf($Cquery);
+$Cresults = mysql_query($Cquery) or die(mysql_error());
+while ($Crows=mysql_fetch_array($Cresults)) { 
+	extract($Crows);
+	if($id == $coacher_CoachID) $Cselect .= '<option value="'.$id.'" selected="selected">'.$coachnamn.' </option>'; else $Cselect .= '<option value="'.$id.'">'.$coachnamn.' </option>';
+	}
+
+$editor_38 = '<form name="CAedit" method="post">
+<table class="CA">
+<tr>
+<td><strong>Byt coach för '.$f1.':</strong> </td>
+<td><select name="coachID" class="selector"> <option value="">Välj coach >></option> '.$Cselect.' </select></td>
+<td>
+<input type="hidden" name="cat_id" value="'.$cat_id.'"/>
+<input type="hidden" name="AnvID" value="'.$AnvID.'"/>
+<input type="hidden" name="livsstilID" value="'.$livsstilID.'"/>
+<input type="hidden" name="FORETAG" value="'.$FORETAG.'"/>
+<input type="hidden" name="GruppID" value="'.$GruppID.'"/>
+<input type="hidden" name="key" value="42"/>
+<input type="hidden" name="action" value="update"/>
+<input type="button" class="submit" onclick="document.CAedit.submit()" value="Spara ändringar"/>
+</td>
+</tr>
+</table><br/>
+</form>';
+
+$inline_38 = $editor_38.$inline_38;
+
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+// Antal test totalt i livsstil
+stats('st_test1', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.username = l.Anvnamn");
+// Antal män i test totalt i livsstil
+stats('st_test1_man', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.username = l.Anvnamn AND l.f2 = 'Man'");
+// Antal kvinnor i test totalt i livsstil
+stats('st_test1_kvinnor', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.username = l.Anvnamn AND l.f2 = 'Kvinna'");
+// Antal test i gruppen i livsstil
+if($GruppID){
+stats('st_grp_test1', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.GruppID = $GruppID AND r.username = l.Anvnamn");
+// Antal män i gruppen i livsstil
+stats('st_grp_test1_man', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.GruppID = $GruppID AND r.username = l.Anvnamn AND l.f2 = 'Man'");
+// Antal kvinnor i gruppen livsstil
+stats('st_grp_test1_kvinnor', "SELECT DISTINCT l.Anvnamn FROM livsstil l, respondent r WHERE r.GruppID > 0 AND r.GruppID != 14 AND r.GruppID = $GruppID AND r.username = l.Anvnamn AND l.f2 = 'Kvinna'");
+}
+
+$statistik_38 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal livsstil totalt: </td><td class="statsnum">'.$st_test1.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal män i livsstil totalt: </td><td class="statsnum">'.$st_test1_man.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal kvinnor i livsstil totalt: </td><td class="statsnum">'.$st_test1_kvinnor.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td><td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal livsstil i vald grupp: </td><td class="statsnum">'.$st_grp_test1.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal män i livsstil i vald grupp: </td><td class="statsnum">'.$st_grp_test1_man.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>antal kvinnor i livsstil i vald grupp: </td><td class="statsnum">'.$st_grp_test1_kvinnor.'</td></tr>
+</table>';
+//////////////////////////////////////
+
+$nav = true;
+$altrows = true;
+$norespondents = true;
+
+//////////////////////////////////////
+// DB UPDATE QUERIES
+///////////////////
+//
+if($_GET['action'] == "activate" and $_GET['LvID'] and $cat_id == "38"){
+$update_query = "UPDATE livsstil SET Status = 1 WHERE ID = ".quote_smart($_GET['LvID']);
+$result = mysql_query($update_query) or die(mysql_error());
+$success = "Aktiverad";
+}
+
+if($action == "update" and $key and $_POST['livsstilID'] and $cat_id == "38"){
+if($_POST['coachID']) $update_query = "UPDATE livsstil SET f43 = ".quote_smart($_POST['coachID'])." WHERE ID = ".quote_smart($_POST['livsstilID']);
+else $update_query = "UPDATE livsstil SET f43 = NULL WHERE ID = ".quote_smart($_POST['livsstilID']);
+$update_query = sprintf($update_query);
+//echo $update_query; die();
+$result = mysql_query($update_query) or die(mysql_error());
+$success = "Ändringar sparade";
+}elseif($action == "update" and (!$key or !$cat_id or !$_POST['livsstilID'])){
+logout(2);
+}
+
+//////////////////////////////////////
+?>

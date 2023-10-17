@@ -1,0 +1,288 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW 
+///////////////////
+if(!$_SESSION['anv']){
+// Show foretag
+if(!$_SESSION['chef']){
+$foretag_query = "SELECT DISTINCT f.ID as ForetagID, f.ID, f.Foretagsnamn FROM foretag f, grupptabell g, cstabell c WHERE f.ID = g.FORETAG AND g.id = c.GruppID ORDER BY f.Foretagsnamn";
+show('selectforetag', 'esys', 35, $foretag_query, $FORETAG, 36);
+}elseif($_SESSION['chef']){
+$getforetag = mysql_fetch_array(mysql_query("SELECT ForetagID FROM chefXforetagTabell WHERE ChefID = ".$_SESSION['chef']));
+$FORETAG = $getforetag[0];
+}
+
+//$inline_41 .= 'baraklara: '.$baraklara.' tillfallestopp: '.$tillfallestopp.'<br/>'; // debug
+
+// Show grupper
+if($FORETAG){ //  or $_SESSION['chef']
+
+if($_SESSION['filtergroups']) $grupper_query_insert = " AND c.Tillfalle = $tillfallestopp";
+
+if($_SESSION['ulvl'] > 7) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c WHERE g.ID = c.GruppID AND g.FORETAG = $FORETAG ".$grupper_query_insert." ORDER BY g.gruppnamn";
+
+elseif($_SESSION['ulvl'] == 4 AND $_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c, chefXforetagTabell cxf WHERE g.ID = c.GruppID AND g.FORETAG = cxf.ForetagID AND cxf.ChefID = ".$_SESSION['chef']." ".$grupper_query_insert." ORDER BY g.gruppnamn"; // AND g.ID != 14 AND g.ID != 35 
+
+elseif($_SESSION['coach']) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c, coachXgruppTabell cxg WHERE g.ID = c.GruppID AND g.FORETAG = $FORETAG AND g.ID = cxg.GruppID AND cxg.CoachID = ".$_SESSION['coach']." ".$grupper_query_insert." ORDER BY g.gruppnamn";
+
+elseif($_SESSION['chef']) $grupper_query = "SELECT DISTINCT g.*,g.ID AS GruppID FROM grupptabell g, cstabell c, chefXgruppTabell cxg WHERE g.ID = c.GruppID AND g.ID = cxg.GruppID AND cxg.ChefID = ".$_SESSION['chef']." ".$grupper_query_insert." ORDER BY g.gruppnamn";
+
+else $AnvID = $_SESSION['anv'];
+
+show('grupper', 'esys', 33, $grupper_query, $GruppID, 34, null, null, 1, null, 'NULL', '', null, null, null, true);
+if(!$_SESSION['chef']) $grupper = '<option value="">Visa alla inom valt företag </option>'.$grupper;
+
+if($kon == 'Alla') $koncont = '<option value="Alla" selected="selected">Alla</option>'; else $koncont = '<option value="Alla">Alla</option>';
+if($kon == 'Man') $koncont .= '<option value="Man" selected="selected">Män</option>'; else $koncont .= '<option value="Man">Män</option>';
+if($kon == 'Kvinna') $koncont .= '<option value="Kvinna" selected="selected">Kvinnor</option>'; else $koncont .= '<option value="Kvinna">Kvinnor</option>';
+
+if($_SESSION['filtergroups'] < 1) $filtreragrupper =  '&nbsp; <input type="button" value="filtrera" onclick="document.nav.subaction.value=\'filtergroups\';document.nav.submit();" class="navbutton" style="font-weight:normal;font-style:italic;"/> &nbsp; ';
+
+if($_SESSION['filtergroups'] > 0) $filtreragrupper =  '&nbsp; <input type="button" value="filtrera inte" onclick="document.nav.subaction.value=\'dontfiltergroups\';document.nav.submit();" class="navbutton" style="font-weight:normal;font-style:italic;"/> &nbsp; ';
+
+$alder = ' &nbsp; Från <input type="text" name="alderstart" size="2" maxlength="2" value="'.$alderstart.'"/> till <input type="text" name="alderstopp" size="2" maxlength="2" value="'.$alderstopp.'"/> år';
+$tillfallen = '<br/><br/>Mellan tillfälle <input type="text" name="tillfallestart" size="2" maxlength="2" value="'.$tillfallestart.'"/> och <input type="text" name="tillfallestopp" size="2" maxlength="2" value="'.$tillfallestopp.'"/>';
+if($baraklara OR !$FORETAG OR !$GruppID) $baracheck = 'checked="checked"';
+$visaklara = ' &nbsp; Visa endast de som genomfört alla valda tillfällen <input type="checkbox" name="baraklara" value="1" '.$baracheck.'/> &nbsp; ';
+$visaknapp = ' &nbsp; <input type="button" onclick="document.nav.subaction.value=\'showcharts\';document.nav.submit();" value="visa" class="navbutton" style="font-weight:bold;"/> &nbsp; <input type="hidden" name="subaction" value=""/>';
+$utskriftval = ' &nbsp; <input type="checkbox" name="forutskrift" value="1"/> <em>för utskrift<em>';
+
+} // END IF FORETAG
+
+// Show individer (behållit för att detta används i STATS nedan)
+if($GruppID){
+$respondent_query = "SELECT DISTINCT r.* FROM respondent r, cstabell c WHERE r.ID = c.AnvID AND r.GruppID = $GruppID ORDER BY username";
+show('respondent', 'esys', 3, $respondent_query, $AnvID, 4);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// STATS
+///////////////////
+// stats
+// Antal grupper totalt
+stats('st_grupper', "SELECT ID FROM grupptabell WHERE ID != 14");
+// Antal individer totalt
+stats('st_respondent', "SELECT DISTINCT username FROM respondent WHERE GruppID > 0 AND GruppID != 14");
+
+$statistik_41 = '<a class="siffror" href="#" onclick="javascript:ShowOrHide(\'stats\',\'\');return false;">visa/göm deltagarstatistik</a>
+<table id="stats" style=\'display:none\' onclick="javascript:ShowOrHide(\'stats\',\'\');">
+<tr><td>grupper totalt: </td><td class="statsnum">'.$st_grupper.'</td></tr>
+<tr><td>individer totalt: </td><td class="statsnum">'.$st_respondent.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>';
+
+// loopa bunch
+for ($i = 1; $i <= 7; $i++){
+// Antal test totalt i cs
+stats('st_test', "SELECT DISTINCT Anvnamn FROM cstabell WHERE GruppID > 0 AND GruppID != 14 AND Tillfalle = $i");
+// Antal test i gruppen i cs
+if($GruppID) stats('st_grp_test', "SELECT DISTINCT c.Anvnamn FROM cstabell c, foretag f WHERE GruppID = $GruppID AND Tillfalle = $i");
+$statistik_cs_tot .= '<tr><td>antal test '.$i.' totalt: </td><td class="statsnum">'.$st_test.'</td></tr>';
+$statistik_cs_grp .= '<tr><td>antal test '.$i.' i vald grupp: </td><td class="statsnum">'.$st_grp_test.'</td></tr>';
+}
+
+$statistik_41 .= $statistik_cs_tot.'<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>
+<tr><td>individer i vald grupp: </td>
+<td class="statsnum">'.$respondent_rows.'</td></tr>
+<tr><td>&nbsp;</td><td class="statsnum">&nbsp;</td></tr>'.$statistik_cs_grp.'</table>';
+//////////////////////////////////////
+
+$nav = true;
+$norespondents = true;
+
+if(($GruppID or $FORETAG) and $subaction == 'showcharts'){ 
+
+// javascript onload
+$onload .= '';
+
+// BUILD query
+if($GruppID) $queryinsert .= " AND c.GruppID = $GruppID";
+if($FORETAG) $queryinsert .= " AND c.GruppID = g.ID AND g.FORETAG = $FORETAG";
+//if($kon OR $alderstart OR $alderstopp) $queryinsert .= " AND c.Anvnamn = l.Anvnamn";
+if($kon AND $kon != 'Alla') $queryinsert .= " AND l.f2 = '$kon'";
+if($alderstart) $minalder = abs($alderstart-date("Y"));
+if($alderstopp) $maxalder = abs($alderstopp-date("Y"));
+if($minalder) $queryinsert .= " AND l.f3 <= $minalder";
+if($maxalder) $queryinsert .= " AND l.f3 >= $maxalder";
+//if($baraklara and $tillfallestopp) $queryinsert .= " AND c2.Anvnamn = l.Anvnamn AND c2.Tillfalle <= $tillfallestopp";
+if($baraklara and $tillfallestopp) $queryinsert .= " AND c2.Anvnamn = c.Anvnamn AND c2.Tillfalle = $tillfallestopp";
+//if($baraklara and $tillfallestopp) $queryinsert .= " AND c2.Anvnamn = c.Anvnamn AND c.Tillfalle <= $tillfallestopp AND c2.Tillfalle = $tillfallestopp ";
+if($baraklara) $tableinsert .= ", cstabell c2";
+//if($kon OR $alderstart OR $alderstopp OR $baraklara) $tableinsert .= ", livsstil l";
+if($FORETAG) $tableinsert .= ", grupptabell g";
+// AnvID overwrites the previous (now unneeded) inserts
+if($AnvID){ 
+$tableinsert = null;
+$queryinsert = " AND AnvID = $AnvID";
+}
+// put it together
+$amquery = "SELECT DISTINCT l.ID as lID, l.f2 as kon, l.f3 as ar, c.* FROM cstabell c, livsstil l".$tableinsert." WHERE c.Anvnamn = l.Anvnamn".$queryinsert." ORDER BY Tillfalle";
+
+//die($amquery);
+
+//$inline_41 .= '<br/> Debugger, amquery: '.$amquery.'<br/>'; // debug
+
+// Dynamic settings for amchart
+$vocab['series']['label'] = 'Tillfälle';
+/*
+$vocab['graph'][0]['title'] = 'Frisk';
+$vocab['graph'][1]['title'] = 'Risk';
+$vocab['graph'][2]['title'] = 'Antal';
+*/
+$vocab['graph']['frisk']['title'] = 'Frisk';
+$vocab['graph']['risk']['title'] = 'Risk';
+$vocab['graph']['friskriskdiff']['title'] = 'F-R Diff';
+$vocab['graph']['testvarde']['title'] = 'Testvärde';
+$vocab['graph']['f1']['title'] = 'f1 fys';
+$vocab['graph']['f2']['title'] = 'f2 soc';
+$vocab['graph']['f3']['title'] = 'f3 stress';
+//$vocab['graph']['antal']['title'] = 'Antal';
+/*
+$style['graph'][0]['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#1de30b"';
+$style['graph'][1]['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#FF0000"';
+$style['graph'][2]['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#b3cbd7" hidden="true"';
+*/
+$style['graph']['frisk']['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#1de30b"';
+$style['graph']['risk']['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#FF0000"';
+$style['graph']['friskriskdiff']['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#b3cbd7" hidden="true"';
+$style['graph']['testvarde']['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#FCD202" hidden="true"';
+
+$style['graph']['f1']['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#bbbbbb" hidden="true"';
+$style['graph']['f2']['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#999999" hidden="true"';
+$style['graph']['f3']['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#777777" hidden="true"';
+
+//$style['graph']['antal']['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#b3cbd7" hidden="true"';
+$calctype['graph']['frisk'] = 'sum'; // sum or mean
+$calctype['graph']['risk'] = 'sum'; // sum or mean
+$calctype['graph']['friskriskdiff'] = 'sum'; // sum or mean
+$calctype['graph']['testvarde'] = 'mean'; // not really necesary since mean is default 
+//$calctype['graph']['antal'] = 'sum'; // sum or mean
+/*
+$vocab['graph'][0]['title'] = 'Testvärde';
+$vocab['graph'][1]['title'] = 'Core index';
+$vocab['graph'][2]['title'] = 'Fys index';
+$style['graph'][0]['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#FCD202" hidden="true"';
+$style['graph'][1]['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#FF9E01"';
+$style['graph'][2]['tagparams'] = 'fill_alpha="60" line_width="2" bullet="round" color="#0D8ECF"';
+*/
+
+//$amgraphs['anvid'] = true;
+//$amgraphs['anvnamn'] = true;
+//$amgraphs['testvarde'] = true;
+//$amgraphs['core'] = true;
+//$amgraphs['fys'] = true;
+//$amgraphs['friskrisk'] = true;
+$amgraphs['frisk'] = true;
+$amgraphs['risk'] = true;
+$amgraphs['friskriskdiff'] = true;
+$amgraphs['testvarde'] = true;
+$amgraphs['f1'] = true;
+$amgraphs['f2'] = true;
+$amgraphs['f3'] = true;
+//$amgraphs['antal'] = true;
+
+// for csv export
+$_SESSION['csv']['vocab']['graph']['testvarde']['title'] = 'Testvärde';
+//$_SESSION['csv_vocab']['graph']['core']['title'] = 'Core index';
+//$_SESSION['csv_vocab']['graph']['fys']['title'] = 'Fys index';
+$_SESSION['csv']['vocab']['graph']['kon']['title'] = 'Kön';
+$_SESSION['csv']['vocab']['graph']['ar']['title'] = 'Ålder';
+//$_SESSION['csv_vocab']['graph']['watt']['title'] = 'Watt';
+//$_SESSION['csv_vocab']['graph']['puls']['title'] = 'Puls';
+//$_SESSION['csv_vocab']['graph']['vikt']['title'] = 'Vikt';
+$_SESSION['csv']['vocab']['graph']['frisk']['title'] = 'Frisk';
+$_SESSION['csv']['vocab']['graph']['risk']['title'] = 'Risk';
+$_SESSION['csv']['vocab']['graph']['friskriskdiff']['title'] = 'F-R Diff';
+$_SESSION['csv']['vocab']['graph']['f1']['title'] = 'f1 fys';
+$_SESSION['csv']['vocab']['graph']['f2']['title'] = 'f2 soc';
+$_SESSION['csv']['vocab']['graph']['f3']['title'] = 'f3 stress';
+//$_SESSION['csv_vocab']['graph']['antal']['title'] = 'Antal';
+// calctype - default is mean, need not specify that
+$_SESSION['csv']['calctype']['graph']['frisk'] = 'sum';
+$_SESSION['csv']['calctype']['graph']['risk'] = 'sum';
+$_SESSION['csv']['calctype']['graph']['friskriskdiff'] = 'sum';
+//$_SESSION['calctype']['graph']['antal'] = 'sum';
+/*
+$vocab['graph'][3]['title'] = 'Kön';
+$vocab['graph'][4]['title'] = 'Ålder';
+$vocab['graph'][5]['title'] = 'Watt';
+$vocab['graph'][6]['title'] = 'Puls';
+$vocab['graph'][7]['title'] = 'Vikt';
+*/
+$_SESSION['csv']['query'] = $amquery;
+$_SESSION['csv']['tillfallestart'] = $tillfallestart;
+$_SESSION['csv']['tillfallestopp'] = $tillfallestopp;
+//$_SESSION['csv_vocab'] = $vocab;
+$_SESSION['csv']['amgraphs']['anvid'] = false;
+$_SESSION['csv']['amgraphs']['anvnamn'] = false;
+$_SESSION['csv']['amgraphs']['testvarde'] = true;
+$_SESSION['csv']['amgraphs']['core'] = false;
+$_SESSION['csv']['amgraphs']['fys'] = false;
+$_SESSION['csv']['amgraphs']['kon'] = true;
+$_SESSION['csv']['amgraphs']['ar'] = true;
+$_SESSION['csv']['amgraphs']['watt'] = false;
+$_SESSION['csv']['amgraphs']['puls'] = false;
+$_SESSION['csv']['amgraphs']['vikt'] = false;
+//$_SESSION['csv']['amgraphs']['friskrisk'] = true;
+$_SESSION['csv']['amgraphs']['frisk'] = true;
+$_SESSION['csv']['amgraphs']['risk'] = true;
+$_SESSION['csv']['amgraphs']['friskriskdiff'] = true;
+$_SESSION['csv']['amgraphs']['f1'] = true;
+$_SESSION['csv']['amgraphs']['f2'] = true;
+$_SESSION['csv']['amgraphs']['f3'] = true;
+$_SESSION['csv']['amgraphs']['antal'] = false;
+$filename = "Cat".$cat_id."_F".$FORETAG."_G".$GruppID;
+$_SESSION['csv']['filename'] = $filename."_".date("Y-m-d_H-i");
+
+//echo '<textarea style="width:100%;height:75%">';
+//print_r($_SESSION);
+//print_r(amchartarr($amquery,$amgraphs,$tillfallestart,$tillfallestopp));
+//echo amchartxml(amchartarr($amquery,$amgraphs,$tillfallestart,$tillfallestopp),$vocab,$style,$calctype);
+//echo amchartxml(amchartarr($amquery,$tillfallestart,$tillfallestopp),$vocab,$style,false);
+//echo nstat_csv(nstat_arr($amquery,$tillfallestart,$tillfallestopp),$vocab);
+//print_r(amchartarr($amquery,$amgraphs,$tillfallestart,$tillfallestopp));
+//echo '</textarea>';
+
+$csv_export_link = '<a class="greybut" href="?'.$_SERVER['QUERY_STRING'].'&action=csvexport&csvmode=nstat" title="exportera data till excel (csv-format)">export till excel</a> &nbsp; &nbsp; ';
+
+$chartdata = amchartxml(amchartarr($amquery,$amgraphs,$tillfallestart,$tillfallestopp),$vocab,$style,$calctype);
+
+if($chartdata){
+$inline_41 .= '<table id="tableCSF" cellpadding="0" cellspacing="0" border="0"><tr><td colspan="4" align="left">
+<tr><td>
+<!-- amline script-->
+<script type="text/javascript">var libpath = "amcharts/amline_1.6.0.1/";</script>
+  <script type="text/javascript" src="amcharts/amline_1.6.0.1/amline/swfobject.js"></script>
+  <div id="hide"></div>
+	<div id="flashcontent">
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
+
+	<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject(libpath+"amline/amline.swf", "amline", "745px", "540px", "8", "#FFFFFF");
+		so.addVariable("path", libpath+"amline/");
+		so.addVariable("settings_file", encodeURIComponent("amcharts/faltdiagram.xml"));
+		so.addVariable("chart_data", encodeURIComponent("'.$chartdata.'"));
+		so.write("flashcontent");
+		// ]]>
+	</script>
+	
+	<script type="text/javascript">
+	// <![CDATA[
+	function printChart(print){
+	alert(print);
+	}
+	// ]]>
+	</script>
+<!-- end of amline script -->
+</td></tr></table>';
+	}
+}
+
+}elseif($_SESSION['anv']){
+// put the thing here too
+$inline_41 .= '<br/><br/>';
+}
+?>

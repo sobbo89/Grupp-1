@@ -1,0 +1,115 @@
+<events>
+  
+  <!-- event id (eid) is passed to a javascript function, when you roll over or click on an event bullet. If
+  you are not using this, you can not specify "eid" -->
+  <event eid="0">
+    <!-- as there can be any number of charts, you have to specify chart_id. If the chart_id is not specified,
+    the event is assigned to the first chart. chart id can be set in settings file, as cid attribute: 
+    <chart cid="first"> In case you don't set the cid for the chart, then the cid is assigned automaticaly, 
+    counting from 0 -->
+    <chart_id>second</chart_id>
+    
+    <!-- as there can be any number of graphs, you have to specify graph_id. If the graph_id is not specified,
+    the event is assigned to the first graph. graph id can be set in settings file, as gid attribute: 
+    <graph gid="first"> In case you don't set the gid for the graph, then the gid is assigned automaticaly, 
+    counting from 0 -->
+    <graph_id>volume</graph_id>
+    
+    <!-- date of the event. You have to use the same date format as set in data_set settings -->
+    <date>2007-01-16</date>
+    
+    <!-- [settings.charts.chart.events.bullet] (sign/flag/pin/round/square/round_outlined/square_outlined/
+    round_outline/square_outline) In case you want to have different bullet, you can set it here -->
+    <bullet>pin</bullet>
+    
+    <!-- [settings.charts.chart.events.color] (hex code) -->
+    <color></color>
+    
+    <!-- [settings.charts.chart.events.border_color] (hex code) -->
+    <border_color></border_color>
+    
+    <!-- [settings.charts.chart.events.text_color] (hex code) -->
+    <text_color></text_color>    
+    
+    <!-- [settings.charts.chart.events.color] (hex code) -->
+    <color></color>        
+    
+    <!-- [] (Symbol) only sign, flag and pin bullets can display letters -->
+    <letter></letter>
+    
+    <!-- [] (Text) -->
+    <description><![CDATA[Dividends]]></description>
+    
+    <!-- [false] (true / false) In case you want your bullet to be displayed on axis, set true here -->
+    <axis>true</axis>
+    
+    <!-- [12] (Number) size of bullet -->
+    <size>12</size>
+    
+    <url></url>
+  </event>
+  
+
+  <event>
+    <date>2008-03-19</date>
+    <letter>A</letter>    
+    <description><![CDATA[Price of Antarctica had a headache]]></description>
+  </event>
+  <event>
+    <date>2007-05-24</date>
+    <letter>B</letter>    
+    <description><![CDATA[It was the hottest day of Spring]]></description>
+  </event>
+  <event>
+    <date>2008-01-29</date>
+    <letter>C</letter>    
+    <description><![CDATA[This was the coldest day of the year]]></description>
+  </event>
+  <event>
+    <date>2008-01-29</date>
+    <color>7f8da9</color>
+    <letter>D</letter>    
+    <description><![CDATA[Penguins emigrated to Africa]]></description>
+  </event>    
+  
+  <event>
+    <chart_id>second</chart_id>
+    <graph_id>volume</graph_id>
+    <date>2007-03-15</date>
+    <bullet>pin</bullet>
+    <description><![CDATA[Dividends]]></description>
+    <axis>true</axis>
+    <size>12</size>
+  </event>  
+  
+  <event>
+    <chart_id>second</chart_id>
+    <graph_id>volume</graph_id>
+    <date>2007-04-19</date>
+    <bullet>pin</bullet>
+    <description><![CDATA[Dividends]]></description>
+    <axis>true</axis>
+    <size>12</size>
+  </event>  
+  
+  <event>
+    <chart_id>second</chart_id>
+    <graph_id>volume</graph_id>
+    <date>2007-05-15</date>
+    <bullet>pin</bullet>
+    <description><![CDATA[Dividends]]></description>
+    <axis>true</axis>
+    <size>12</size>
+  </event>  
+  
+  <event>
+    <chart_id>second</chart_id>
+    <graph_id>volume</graph_id>
+    <date>2007-06-15</date>
+    <bullet>pin</bullet>
+    <description><![CDATA[Dividends]]></description>
+    <axis>true</axis>
+    <size>12</size>
+  </event>      
+    
+</events>

@@ -1,0 +1,112 @@
+﻿<?php
+//////////////////////////////////////
+// SHOW 
+///////////////////
+// Show foretag
+$foretag_query = "SELECT * FROM foretag ORDER BY Foretagsnamn";
+show('foretag', 'esys', 23, $foretag_query, $ForetagID, 2);
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SHOW
+///////////////////
+// Show chefer
+$chefer_query = "SELECT * FROM cheftabell order by chefnamn";
+show('chefer', 'esys', 17, $chefer_query);
+// Show grupper -> Being done in index
+/*$grupper_query = "SELECT * FROM grupptabell";
+show('grupper', 'esys', 11, $grupper_query);*/
+
+$inline_34_query = "SELECT cxftt.ID, ftt.Foretagsnamn, ctt.chefnamn FROM chefXforetagTabell cxftt, foretag ftt, cheftabell ctt WHERE cxftt.ForetagID = ftt.ID AND cxftt.chefID = ctt.ID ORDER BY ctt.chefnamn";
+show('inline_34_add', 'esys', 24, $inline_34_query, null, 1, null, $cat_id);
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// SELECTOR (instead of nav)
+///////////////////
+$inline_34 ='
+<form name="selectcxf" id="selectcxf" method="post">
+
+<select name="chefer_ChefID" class="selector">
+<option value="">Välj Chef: &nbsp; </option>
+'.$chefer.'
+</select>
+
+<select name="foretag_ForetagID" class="selector">
+<option value="">Välj Foretag: &nbsp; </option>
+'.$foretag.'
+</select>
+
+<input type="hidden" name="cat_id" value="'.$cat_id.'"/>
+<input type="hidden" name="key" value="42"/>
+<input type="hidden" name="action" value="insert"/>
+<input type="button" class="submit" onclick="document.selectcxf.submit();" value="Skapa koppling"/>
+</form>
+<br/><br/>
+<form name="listcxf" id="listcxf" method="post">
+<table id="table34">
+'.$inline_34_add.'
+</table>
+<input type="hidden" name="cxfid" value=""/>
+<input type="hidden" name="cat_id" value="'.$cat_id.'"/>
+<input type="hidden" name="key" value="42"/>
+<input type="hidden" name="action" value="delete"/>
+</form>';
+//////////////////////////////////////
+
+$nav = null;
+$altrows = null;
+
+//////////////////////////////////////
+// DB INSERT QUERIES
+///////////////////
+//
+if($action == "insert" and $key and $cat_id == "34"){
+include "inc/errors.inc";
+$insert_query = "INSERT INTO chefXforetagTabell VALUES(DEFAULT(ID)";
+if($_POST['chefer_ChefID']) $insert_query .= ", ".quote_smart($_POST['chefer_ChefID']); else die('ChefID saknas '.$tryagain);
+if($_POST['foretag_ForetagID']) $insert_query .= ", ".quote_smart($_POST['foretag_ForetagID']); else die('ForetagID saknas '.$tryagain);
+$insert_query .= ")";
+$insert_query = sprintf($insert_query);
+//echo $insert_query; die();
+$result = mysql_query($insert_query) or die(mysql_error());
+
+// BEGIN SPECIAL TEST AND WRITE TO RESPONDENT
+$results = mysql_query("SELECT chefemail FROM cheftabell WHERE id = ".$_POST['chefer_ChefID']) or die(mysql_error());
+$rows=mysql_fetch_array($results);
+extract($rows);
+$results = mysql_query("SELECT * FROM respondent WHERE GruppID = 38 AND username = '".$chefemail."'") or die(mysql_error());
+$numrows = mysql_num_rows($results);
+if($numrows < 1){ 
+// END TEST BEGIN WRITE
+
+$insert_query = "INSERT INTO respondent (username,GruppID) VALUES ('".$chefemail."',38)";
+//echo $insert_query; die();
+$result = mysql_query($insert_query) or die(mysql_error());
+
+}
+// END WRITE
+$success = "Ny koppling sparad";
+}elseif($action == "insert" and (!$key or !$cat_id)){
+logout(2);
+}
+//////////////////////////////////////
+
+
+//////////////////////////////////////
+// DB DELETE QUERIES
+///////////////////
+//
+if($action == "delete" and $key and ($_POST['cxfid']) and $cat_id == "34"){
+$delete_query = "DELETE FROM chefXforetagTabell WHERE ID =".quote_smart($_POST['cxfid']);
+$delete_query = sprintf($delete_query);
+//echo $delete_query; die();
+$result = mysql_query($delete_query) or die(mysql_error());
+$success = "Kopplingen borttagen";
+}elseif($action == "delete" and (!$key or !$cat_id or !($_POST['cxfid']))){
+logout(2);
+}
+//////////////////////////////////////
+?>
