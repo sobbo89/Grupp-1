@@ -26,5 +26,5 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        source: '*.*'
+        source: '*'
         target: /var/www/healthevolution.nodehill.com/public_html
